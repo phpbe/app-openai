@@ -1,0 +1,25 @@
+{
+  "name": "be/app-openai",
+  "type": "library",
+  "description": "OpenAI 应用 ChatGPT",
+  "keywords": [
+    "OpenAI",
+    "ChatGPT"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "liu12",
+      "email": "i@liu12.com",
+      "homepage": "https://www.liu12.com"
+    }
+  ],
+  "require": {
+    "be/be": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Be\\App\\Openai\\": "src/"
+    }
+  }
+}
