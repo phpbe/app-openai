@@ -24,8 +24,8 @@ class Base
             if (md5('Openai:Password:' . $config->password) !== Be::getRequest()->cookie('Openai:Password')) {
                 $redirect = [
                     'url' => beUrl('Openai.Auth.login'),
-                    'message' => '{timeout} 秒后跳转到 <a href="{url}">登录页</a>',
-                    'timeout' => 3,
+                    //'message' => '{timeout} 秒后跳转到 <a href="{url}">登录页</a>',
+                    'timeout' => 0,
                 ];
 
                 throw new ControllerException('此功能限制访问，请先登录！', 0, $redirect);

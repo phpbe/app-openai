@@ -14,10 +14,7 @@ class Auth
     public int $enable = 1;
 
     /**
-     * @BeConfigItem("访问密码",
-     *     description="留空时不需要密码",
-     *     driver="FormItemInput"
-     * )
+     * @BeConfigItem("访问密码", driver="FormItemInput")
      */
     public string $password = '123456';
 
