@@ -74,8 +74,8 @@ class Template extends Section
         }
         echo '</div>';
 
-        echo '<div class="be-mt-50">';
         if ($session === false) {
+            echo '<div class="be-mt-50">';
             echo '<div class="be-row">';
             echo '<div class="be-col">';
             echo '<input type="text" name="question" class="be-input" id="completion-session-question" placeholder="请输入提问内容，按回车发送">';
@@ -87,14 +87,16 @@ class Template extends Section
             echo '</div>';
             echo '<div class="be-col-auto">';
             echo '<div class="be-pl-50">';
-            echo '<button type="submit" class="be-btn be-lh-175" id="completion-session-new"><i class="bi-plus"></i> 发起新话会</button>';
+            echo '<button type="submit" class="be-btn be-lh-175" id="completion-session-new"><i class="bi-plus"></i> 发起新会话</button>';
+            echo '</div>';
             echo '</div>';
             echo '</div>';
             echo '</div>';
         } else {
+            echo '<div class="be-mt-50 be-ta-right">';
             echo '<a href="' . beUrl('Openai.Completion.session') . '" class="be-btn be-btn-major"><i class="bi-plus"></i> 发起新会话</a>';
+            echo '</div>';
         }
-        echo '</div>';
 
         echo $this->page->tag1('be-section-content');
         if ($this->position === 'middle' && $this->config->width === 'default') {
