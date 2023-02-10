@@ -42,8 +42,8 @@ class Template extends Section
         if ($result['total'] > 0) {
             foreach ($result['rows'] as $session) {
                 echo '<div class="be-py-20">';
-                echo '<a class="be-d-block be-t-ellipsis" href="' . beUrl('Openai.Completion.detail', ['id' => $session->id]) . '" title="' . $session->title . '">';
-                echo $session->title;
+                echo '<a class="be-d-block be-t-ellipsis-2" href="' . beUrl('Openai.Completion.session', ['session_id' => $session->id]) . '" title="' . $session->name . '">';
+                echo $session->name;
                 echo '</a>';
                 echo '</div>';
             }

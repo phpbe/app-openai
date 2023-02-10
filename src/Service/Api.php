@@ -40,8 +40,8 @@ class Api
 
         $responseStr = \Be\Util\Net\Curl::postJson($url, $data, $headers, [CURLOPT_TIMEOUT => 300]);
 
-        file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($data, true) . "\n", FILE_APPEND);
-        file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($responseStr, true) . "\n\n\n", FILE_APPEND);
+        //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($data, true) . "\n", FILE_APPEND);
+        //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($responseStr, true) . "\n\n\n", FILE_APPEND);
 
         $response = json_decode($responseStr, true);
         if (!$response || !is_array($response)) {

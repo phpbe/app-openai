@@ -90,6 +90,7 @@ class Completion
         foreach ($messages as $message) {
             $message->line = (int)$message->line;
             $message->is_complete = (int)$message->is_complete;
+            $message->answer = $this->formatAnswer($message->answer);
         }
         $session->messages = $messages;
 
@@ -210,6 +211,8 @@ class Completion
             }
 
             $sessionMessage = $tableCompletionSessionMessage->toObject();
+            $sessionMessage->answer = $this->formatAnswer($sessionMessage->answer);
+
             if ($sessionMessage->is_complete === 1) {
                 break;
             }
@@ -251,5 +254,18 @@ class Completion
         }
 
         return $tupleCompletionSession->toObject();
+    }
+
+    /**
+     * 格式化应签回复
+     *
+     * @param string $answer
+     * @return string
+     */
+    public function formatAnswer(string $answer): string
+    {
+        $answer = nl2br($answer);
+
+        return $answer;
     }
 }

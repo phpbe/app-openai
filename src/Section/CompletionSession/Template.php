@@ -44,9 +44,7 @@ class Template extends Section
             foreach ($session->messages as $message) {
                 echo '<div class="be-row">';
                 echo '<div class="be-col-auto">';
-                echo '<div class="be-pl-50">';
                 echo '<span class="be-c-major be-fw-bold">我：</span>';
-                echo '</div>';
                 echo '</div>';
                 echo '<div class="be-col be-c-major">';
                 echo $message->question;
@@ -56,25 +54,20 @@ class Template extends Section
 
                 echo '<div class="be-row be-mt-50 be-mb-200">';
                 echo '<div class="be-col-auto">';
-                echo '<div class="be-pl-50">';
                 echo '<span class="be-fw-bold">ChatGPT：</span>';
                 echo '</div>';
-                echo '</div>';
-                echo '<div class="be-col">';
+                echo '<div class="be-col completion-session-message-answer">';
                 echo $message->answer;
-                echo '<span class="be-c-font-6">（' . $message->update_time . '）</span>';
                 echo '</div>';
                 echo '</div>';
             }
         } else {
             echo '<div class="be-row be-mt-50 be-mb-200">';
             echo '<div class="be-col-auto">';
-            echo '<div class="be-pl-50">';
             echo '<span class="be-fw-bold">ChatGPT：</span>';
             echo '</div>';
-            echo '</div>';
             echo '<div class="be-col">';
-            echo '我是无所不知的ChatGPT，有什么问题尽管问我吧。';
+            echo '我是来自 OpenAI 实验室的 ChatGPT，有什么问题尽管问我吧。';
             echo '<span class="be-c-font-6">（' . date('Y-m-d H:i:s') . '）</span>';
             echo '</div>';
             echo '</div>';
@@ -109,9 +102,7 @@ class Template extends Section
         }
         echo '</div>';
 
-        if ($session === false) {
-            $this->js();
-        }
+        $this->js();
     }
 
 
@@ -125,13 +116,13 @@ class Template extends Section
         echo '#' . $this->id . ' .completion-session-messages {';
         echo 'min-height: 400px;';
         echo 'height: 60vh;';
-        echo 'padding: .5rem;';
-        echo 'border: var(--font-color-9) 1px solid;';
-        echo 'overflow-y: hidden;';
+        //echo 'padding: .5rem;';
+        //echo 'border: var(--font-color-9) 1px solid;';
+        echo 'overflow-y: auto;';
         echo '}';
 
-        echo '#' . $this->id . ' .completion-session-messages:hover {';
-        echo 'overflow-y: auto;';
+        echo '#' . $this->id . ' .completion-session-message-answer p {';
+        echo 'margin: 0;';
         echo '}';
 
         echo '</style>';
@@ -141,7 +132,8 @@ class Template extends Section
     private function js()
     {
         ?>
-        <script type="text/javascript">
+        <!--script src="<?PHP echo \Be\Be::getProperty('App.Openai')->getWwwUrl(); ?>/lib/marked/marked.min.js"></script-->
+        <script>
             let sessionId = "";
             let messageId = "";
 
@@ -151,6 +143,7 @@ class Template extends Section
             let timer;
             let timerStartTime;
 
+            let $messages = $("#completion-session-messages");
             let $question = $("#completion-session-question");
             let $submit = $("#completion-session-submit");
             let $newSession = $("#completion-session-new");
@@ -187,9 +180,7 @@ class Template extends Section
                             let html = "";
                             html += '<div class="be-row">';
                             html += '<div class="be-col-auto">';
-                            html += '<div class="be-pl-50">';
                             html += '<span class="be-c-major be-fw-bold">我：</span>';
-                            html += '</div>';
                             html += '</div>';
                             html += '<div class="be-col be-c-major">';
                             html += json.session.latestMessage.question;
@@ -199,20 +190,17 @@ class Template extends Section
 
                             html += '<div class="be-row be-mt-50 be-mb-200">';
                             html += '<div class="be-col-auto">';
-                            html += '<div class="be-pl-50">';
                             html += '<span class="be-fw-bold">ChatGPT：</span>';
                             html += '</div>';
-                            html += '</div>';
-                            html += '<div class="be-col" id="completion-session-message-answer-' + json.session.latestMessage.id + '">';
+                            html += '<div class="be-col completion-session-message-answer" id="completion-session-message-answer-' + json.session.latestMessage.id + '">';
                             html += '处理中.';
                             html += '</div>';
                             html += '</div>';
 
-                            let $messages = $("#completion-session-messages");
                             $messages.append(html);
 
                             let scrollHeight = $messages.prop("scrollHeight");
-                            $messages.animate({scrollTop:scrollHeight},500);
+                            $messages.animate({scrollTop: scrollHeight}, 100);
 
                             $question.val("");
                             $submit.html('<i class="bi-send"></i> 回复中...');
@@ -282,6 +270,7 @@ class Template extends Section
                     $newSession.prop('disabled', false);
                 }
             }
+
             check();
 
             function receive() {
@@ -300,15 +289,36 @@ class Template extends Section
                                 handling = false;
                                 $submit.prop('disabled', false).html('<i class="bi-send"></i> 发送');
 
-                                // 打字效果
-                                let html = "";
-                                html += json.sessionMessage.answer;
-                                html += '<span class="be-c-font-6">（' + json.sessionMessage.create_time + '）</span>';
-                                $("#completion-session-message-answer-" + messageId).html(html);
+                                //$("#completion-session-message-answer-" + messageId).html(marked.parse(json.sessionMessage.answer));
+                                $("#completion-session-message-answer-" + messageId).html(json.sessionMessage.answer);
 
-                                let $messages = $("#completion-session-messages");
-                                let scrollHeight = $messages.prop("scrollHeight");
-                                $messages.animate({scrollTop:scrollHeight},500);
+                                let messagesCcrollHeight0 = $messages.prop("scrollHeight");
+                                $messages.animate({scrollTop: messagesCcrollHeight0}, 100);
+
+                                /*
+                                let $answer = $("#completion-session-message-answer-" + messageId);
+                                let pos = 0;
+                                let length = json.sessionMessage.answer.length;
+                                let typeTimer = setInterval(function () {
+                                    pos++;
+                                    if (pos < length) {
+                                        $answer.html(json.sessionMessage.answer.substring(0, pos));
+                                    } else {
+                                        // 打字效果
+                                        let html = "";
+                                        html += json.sessionMessage.answer;
+                                        html += '<span class="be-c-font-6">（' + json.sessionMessage.create_time + '）</span>';
+                                        $answer.html(html);
+
+                                        clearInterval(typeTimer);
+                                    }
+
+                                    let messagesCcrollHeight1 = $messages.prop("scrollHeight");
+                                    if (messagesCcrollHeight1 !== messagesCcrollHeight0) {
+                                        $messages.animate({scrollTop: messagesCcrollHeight1}, 100);
+                                    }
+                                }, 50);
+                                */
 
                                 check();
                             }
@@ -324,6 +334,11 @@ class Template extends Section
                 });
             }
 
+            /*
+            $(".completion-session-message-answer").each(function () {
+                $(this).html(marked.parse($(this).html()));
+            });
+           */
         </script>
         <?php
     }
