@@ -21,7 +21,7 @@ class Auth
             $config = Be::getConfig('App.Openai.Auth');
             if ($config->password === $password) {
                 $response->cookie('Openai:Password', md5('Openai:Password:' . $config->password), time() + 86400 * 180, '/', $request->getDomain(), false, true);
-                $response->success( '登录成功！', ['url' => beUrl('Openai.Completion.index')]);
+                $response->success( '登录成功！', ['url' => beUrl('Openai.Completion.session')]);
             } else {
                 $response->error('密码错误！', ['url' => beUrl('Openai.Auth.login')]);
             }

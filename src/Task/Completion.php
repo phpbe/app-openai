@@ -17,50 +17,70 @@ class Completion extends Task
      */
     protected $parallel = false;
 
+    /**
+     * 执行超时时间
+     *
+     * @var null|int
+     */
+    protected $timeout = 600;
 
     public function execute()
     {
+        $configApi = Be::getConfig('App.Openai.Api');
         $serviceApi = Be::getService('App.Openai.Api');
 
         $db = Be::getDb();
         $sql = 'SELECT * FROM openai_completion_session_message WHERE is_complete = 0';
         $messages = $db->getYieldObjects($sql);
 
-        foreach ($messages as $message) {
+        do {
+            $incomplete = 0;
+            foreach ($messages as $message) {
 
-            // 交互式会话
-            if ($message->line > 1) {
+                // 交互式会话
+                if ($message->line > 1) {
+                    $prompt = '';
+                    $sql = 'SELECT * FROM openai_completion_session_message WHERE completion_session_id = ? ORDER BY line ASC';
+                    $messages = $db->getObjects($sql, [$message->completion_session_id]);
+                    foreach ($messages as $m) {
+                        $prompt .= 'Q: ' . $m->question . "\n\n";
+                        $prompt .= 'A: ' . $m->answer . "\n\n";
+                    }
 
-                $prompt = '';
-                $sql = 'SELECT * FROM openai_completion_session_message WHERE completion_session_id = ? ORDER BY line ASC';
-                $messages = $db->getObjects($sql);
-                foreach ($messages as $m) {
-                    $prompt .= 'You: ' . $message->question . "\n";
-                    $prompt .= $message->answer . "\n";
+                } else {
+                    $prompt = $message->question;
                 }
 
-            } else {
-                $prompt = $message->question;
+                $hasError = false;
+                try {
+                    $answer = $serviceApi->completion($prompt);
+                } catch (\Throwable $t) {
+                    $answer = $t->getMessage();
+                    $hasError = true;
+                }
+
+                $obj = new \stdClass();
+                $obj->id = $message->id;
+                $obj->answer = $answer;
+                $obj->times = $message->times + 1;
+
+                $obj->is_complete = 1;
+                if ($hasError && $obj->times < $configApi->times) {
+                    $obj->is_complete = 0;
+                    $incomplete++;
+                }
+
+                $obj->update_time = date('Y-m-d H:i:s');
+                $db->update('openai_completion_session_message', $obj);
+
+                $obj = new \stdClass();
+                $obj->id = $message->completion_session_id ;
+                $obj->update_time = date('Y-m-d H:i:s');
+                $db->update('openai_completion_session', $obj);
             }
 
-            try {
-                $answer = $serviceApi->completion($prompt);
-            } catch (\Throwable $t) {
-                $answer = '调用接口失败：' . $t->getMessage();
-            }
+        } while($incomplete > 0);
 
-            $obj = new \stdClass();
-            $obj->id = $message->id;
-            $obj->answer = $answer;
-            $obj->is_complete = 1;
-            $obj->update_time = date('Y-m-d H:i:s');
-            $db->update('openai_completion_session_message', $obj);
-
-            $obj = new \stdClass();
-            $obj->id = $message->completion_session_id ;
-            $obj->update_time = date('Y-m-d H:i:s');
-            $db->update('openai_completion_session', $obj);
-        }
 
         // 结整超过1天的的会话
         $sql = 'SELECT * FROM openai_completion_session WHERE is_complete = 0';

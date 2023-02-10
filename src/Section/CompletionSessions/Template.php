@@ -1,6 +1,6 @@
 <?php
 
-namespace Be\App\Openai\Section\CompletionSession;
+namespace Be\App\Openai\Section\CompletionSessions;
 
 use Be\Be;
 use Be\Theme\Section;
@@ -14,16 +14,6 @@ class Template extends Section
     public function display()
     {
         if ($this->config->enable === 0) {
-            return;
-        }
-
-        $serviceCompletion = Be::getService('App.Openai.Completion');
-        $result = $serviceCompletion->getSessions([
-            'is_complete' => 1,
-            'pageSize' => $this->config->quantity
-        ]);
-
-        if ($result['total'] === 0) {
             return;
         }
 
@@ -42,29 +32,30 @@ class Template extends Section
 
         echo $this->page->tag0('be-section-content');
 
-        $isMobile = \Be\Be::getRequest()->isMobile();
-        foreach ($result['rows'] as $session) {
-            echo '<div class="be-py-20">';
-            echo '<a class="be-d-block be-t-ellipsis" href="' . beUrl('Openai.Completion.detail', ['id' => $session->id]) . '" title="' . $session->title . '"';
-            if (!$isMobile) {
-                echo ' target="_blank"';
+
+        $serviceCompletion = Be::getService('App.Openai.Completion');
+        $result = $serviceCompletion->getSessions([
+            'is_complete' => 1,
+            'pageSize' => $this->config->quantity
+        ]);
+
+        if ($result['total'] > 0) {
+            foreach ($result['rows'] as $session) {
+                echo '<div class="be-py-20">';
+                echo '<a class="be-d-block be-t-ellipsis" href="' . beUrl('Openai.Completion.detail', ['id' => $session->id]) . '" title="' . $session->title . '">';
+                echo $session->title;
+                echo '</a>';
+                echo '</div>';
             }
-            echo '>';
-            echo $session->title;
-            echo '</a>';
-            echo '</div>';
+        } else {
+            echo '<div class="be-py-20 be-c-font-6">暂无记录！</div>';
         }
 
         if (isset($section->config->more) && $section->config->more !== '') {
             echo '<div class="be-mt-100 be-bt-eee be-pt-100 be-ta-right">';
-            echo '<a href="' . $moreLink . '"';
-            if (!$isMobile) {
-                echo ' target="_blank"';
-            }
-            echo '>' . $section->config->more . '</a>';
+            echo '<a href="' . beUrl('Openai.Completion.sessions') . '">' . $section->config->more . '</a>';
             echo '</div>';
         }
-
 
         echo $this->page->tag1('be-section-content');
         if ($this->position === 'middle' && $this->config->width === 'default') {

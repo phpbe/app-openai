@@ -83,9 +83,6 @@ class Completion
 
         $session = $tupleCompletionSession->toObject();
 
-        $session->lines = (int)$session->lines;
-        $session->is_complete = (int)$session->is_complete;
-
         $tableCompletionSessionMessage = Be::getTable('openai_completion_session_message');
         $tableCompletionSessionMessage->where('completion_session_id', $session->id)->orderBy('line ASC');
 
@@ -94,6 +91,7 @@ class Completion
             $message->line = (int)$message->line;
             $message->is_complete = (int)$message->is_complete;
         }
+        $session->messages = $messages;
 
         return $session;
     }
@@ -105,8 +103,13 @@ class Completion
      * @param string $sessionId
      * @return object
      */
-    public function create(string $question, string $sessionId = ''): object
+    public function send(string $question, string $sessionId = ''): object
     {
+        $question = trim($question);
+        if ($question === '') {
+            throw new ServiceException('提问内容不可为空！');
+        }
+
         $db = Be::getDb();
 
         $isNew = ($sessionId === '');
@@ -152,6 +155,7 @@ class Completion
             $tupleCompletionSessionMessage->line = $tupleCompletionSession->lines;
             $tupleCompletionSessionMessage->question = $question;
             $tupleCompletionSessionMessage->answer = '';
+            $tupleCompletionSessionMessage->times = 0;
             $tupleCompletionSessionMessage->is_complete = 0;
             $tupleCompletionSessionMessage->create_time = $now;
             $tupleCompletionSessionMessage->update_time = $now;
@@ -168,8 +172,84 @@ class Completion
             throw new ServiceException(($isNew ? '新建' : '编辑') . '会话发生异常！');
         }
 
-        return $tupleCompletionSession->toObject();
+        $session = $tupleCompletionSession->toObject();
+        $session->latestMessage = $tupleCompletionSessionMessage->toObject();
+
+        return $session;
     }
 
+    /**
+     * 等待消息
+     *
+     * @param string $sessionId 会话ID
+     * @param string $messageId 消息ID
+     * @param int $timeout 超时时间
+     * @return object
+     */
+    public function waitSessionMessage(string $sessionId, string $messageId, int $timeout = 15): object
+    {
+        $t0 = microtime(1);
 
+        $tupleCompletionSession = Be::getTuple('openai_completion_session');
+        try {
+            $tupleCompletionSession->load($sessionId);
+        } catch (\Throwable $t) {
+            throw new ServiceException('会话（# ' . $sessionId . '）不存在！');
+        }
+
+        if ($tupleCompletionSession->is_complete === 1) {
+            throw new ServiceException('会话已关闭！');
+        }
+
+        while (1) {
+            $tableCompletionSessionMessage = Be::getTuple('openai_completion_session_message');
+            try {
+                $tableCompletionSessionMessage->load($messageId);
+            } catch (\Throwable $t) {
+                throw new ServiceException('会话消息（# ' . $messageId . '）不存在！');
+            }
+
+            $sessionMessage = $tableCompletionSessionMessage->toObject();
+            if ($sessionMessage->is_complete === 1) {
+                break;
+            }
+
+            $t1 = microtime(1);
+            if ($t1 - $t0 >= $timeout) {
+                break;
+            }
+
+            if (Be::getRuntime()->isSwooleMode()) {
+                \Swoole\Coroutine::sleep(1);
+            } else {
+                sleep(1);
+            }
+        }
+
+        return $sessionMessage;
+    }
+
+    /**
+     * 关闭
+     *
+     * @param string $sessionId
+     * @return object
+     */
+    public function close(string $sessionId): object
+    {
+        $tupleCompletionSession = Be::getTuple('openai_completion_session');
+        try {
+            $tupleCompletionSession->load($sessionId);
+        } catch (\Throwable $t) {
+            throw new ServiceException('会话（# ' . $sessionId . '）不存在！');
+        }
+
+        if ($tupleCompletionSession->is_complete != 1) {
+            $tupleCompletionSession->is_complete = 1;;
+            $tupleCompletionSession->update_time = date('Y-m-d H:i:s');
+            $tupleCompletionSession->update();
+        }
+
+        return $tupleCompletionSession->toObject();
+    }
 }

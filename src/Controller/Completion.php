@@ -8,6 +8,28 @@ class Completion extends Base
 {
 
     /**
+     * ChatGPT 历史会话
+     *
+     * @BeMenu("ChatGPT 历史会话")
+     * @BeRoute("/openai/chatgpt/history")
+     */
+    public function sessions()
+    {
+        $request = Be::getRequest();
+        $response = Be::getResponse();
+
+        $pageConfig = $response->getPageConfig();
+        $response->set('pageConfig', $pageConfig);
+
+        $response->set('title', $pageConfig->title ?: '');
+        $response->set('metaDescription', $pageConfig->metaDescription ?: '');
+        $response->set('metaKeywords', $pageConfig->metaKeywords ?: '');
+        $response->set('pageTitle', $pageConfig->pageTitle ?: ($pageConfig->title ?: ''));
+
+        $response->display();
+    }
+
+    /**
      * ChatGPT
      *
      * @BeMenu("ChatGPT")
@@ -34,28 +56,100 @@ class Completion extends Base
         $response->display();
     }
 
+    /**
+     * 提问
+     *
+     * @BeRoute("/openai/chatgpt/send")
+     */
+    public function send()
+    {
+        $request = Be::getRequest();
+        $response = Be::getResponse();
+        
+        try {
+            $config = Be::getConfig('App.Openai.Auth');
+            if ($config->enable === 1 && $config->scope === 'api') {
+                $this->auth();
+            }
+
+            $question = $request->post('question', '');
+            $sessionId = $request->post('session_id', '');
+            $serviceCompletion = Be::getService('App.Openai.Completion');
+            $session = $serviceCompletion->send($question, $sessionId);
+
+            $response->set('success', true);
+            $response->set('message', '提交成功！');
+            $response->set('session',$session);
+            $response->json();
+        } catch (\Throwable $t) {
+            $response->set('success', false);
+            $response->set('message', $t->getMessage());
+            $response->json();
+        }
+    }
 
     /**
-     * ChatGPT 历史会话
+     * 接收
      *
-     * @BeMenu("ChatGPT 历史会话")
-     * @BeRoute("/openai/chatgpt/history")
+     * @BeRoute("/openai/chatgpt/receive")
      */
-    public function sessions()
+    public function receive()
     {
         $request = Be::getRequest();
         $response = Be::getResponse();
 
-        $pageConfig = $response->getPageConfig();
-        $response->set('pageConfig', $pageConfig);
+        try {
+            $config = Be::getConfig('App.Openai.Auth');
+            if ($config->enable === 1 && $config->scope === 'api') {
+                $this->auth();
+            }
 
-        $response->set('title', $pageConfig->title ?: '');
-        $response->set('metaDescription', $pageConfig->metaDescription ?: '');
-        $response->set('metaKeywords', $pageConfig->metaKeywords ?: '');
-        $response->set('pageTitle', $pageConfig->pageTitle ?: ($pageConfig->title ?: ''));
+            $sessionId = $request->post('session_id', '');
+            $messageId = $request->post('message_id', '');
+            $serviceCompletion = Be::getService('App.Openai.Completion');
+            $sessionMessage = $serviceCompletion->waitSessionMessage($sessionId, $messageId);
 
-        $response->display();
+            $response->set('success', true);
+            $response->set('message', '获取成功！');
+            $response->set('sessionMessage', $sessionMessage);
+            $response->json();
+
+        } catch (\Throwable $t) {
+            $response->set('success', false);
+            $response->set('message', $t->getMessage());
+            $response->json();
+        }
     }
 
+
+    /**
+     * 提问
+     *
+     * @BeRoute("/openai/chatgpt/close")
+     */
+    public function close()
+    {
+        $request = Be::getRequest();
+        $response = Be::getResponse();
+
+        try {
+            $config = Be::getConfig('App.Openai.Auth');
+            if ($config->enable === 1 && $config->scope === 'api') {
+                $this->auth();
+            }
+
+            $sessionId = $request->post('session_id', '');
+            $serviceCompletion = Be::getService('App.Openai.Completion');
+            $serviceCompletion->close($sessionId);
+
+            $response->set('success', true);
+            $response->set('message', '关闭会话成功！');
+            $response->json();
+        } catch (\Throwable $t) {
+            $response->set('success', false);
+            $response->set('message', $t->getMessage());
+            $response->json();
+        }
+    }
 
 }

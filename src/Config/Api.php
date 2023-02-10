@@ -12,5 +12,11 @@ class Api
      */
     public string $apiKey = '';
 
+    /**
+     * @BeConfigItem("调用失败重试次数", driver="FormItemInputNumberInt")
+     */
+    public int $times = 5;
+
+
 }
 
