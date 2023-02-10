@@ -30,16 +30,25 @@ class Template extends Section
             echo '<div class="be-container">';
         }
 
-        if ($this->config->title !== '') {
-            echo $this->page->tag0('be-section-title');
-            echo $this->config->title;
-            echo $this->page->tag1('be-section-title');
+        echo $this->page->tag0('be-section-title');
+        echo '<div class="be-row">';
+        echo '<div class="be-col">';
+        echo $this->config->title;
+        echo '</div>';
+        echo '<div class="be-col-auto">';
+        if ($session === false) {
+            echo '<button type="submit" class="be-btn be-btn-major" id="completion-session-new"><i class="bi-plus"></i> 发起新会话</button>';
+        } else {
+            echo '<a href="' . beUrl('Openai.Completion.session') . '" class="be-btn be-btn-major"><i class="bi-plus"></i> 发起新会话</a>';
         }
+        echo '</div>';
+        echo '</div>';
+        echo $this->page->tag1('be-section-title');
+
 
         echo $this->page->tag0('be-section-content');
 
         echo '<div class="completion-session-messages" id="completion-session-messages">';
-
         if ($session !== false) {
             foreach ($session->messages as $message) {
                 echo '<div class="be-row">';
@@ -87,14 +96,9 @@ class Template extends Section
             echo '</div>';
             echo '<div class="be-col-auto">';
             echo '<div class="be-pl-50">';
-            echo '<button type="submit" class="be-btn be-lh-175" id="completion-session-new"><i class="bi-plus"></i> 发起新会话</button>';
             echo '</div>';
             echo '</div>';
             echo '</div>';
-            echo '</div>';
-        } else {
-            echo '<div class="be-mt-50 be-ta-right">';
-            echo '<a href="' . beUrl('Openai.Completion.session') . '" class="be-btn be-btn-major"><i class="bi-plus"></i> 发起新会话</a>';
             echo '</div>';
         }
 
