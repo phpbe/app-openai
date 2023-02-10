@@ -37,9 +37,14 @@ class Completion extends Base
      */
     public function session()
     {
+        $requestLogin = false;
         $config = Be::getConfig('App.Openai.Auth');
         if ($config->enable === 1 && $config->scope === 'api') {
-            $this->auth();
+            try {
+                $this->auth();
+            } catch (\Throwable $t) {
+                $requestLogin = true;
+            }
         }
 
         $request = Be::getRequest();
@@ -52,6 +57,8 @@ class Completion extends Base
         $response->set('metaDescription', $pageConfig->metaDescription ?: '');
         $response->set('metaKeywords', $pageConfig->metaKeywords ?: '');
         $response->set('pageTitle', $pageConfig->pageTitle ?: ($pageConfig->title ?: ''));
+
+        $response->set('requestLogin', $requestLogin);
 
         $response->display();
     }

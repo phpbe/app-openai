@@ -85,7 +85,11 @@ class Template extends Section
             echo '</div>';
             echo '<div class="be-col-auto">';
             echo '<div class="be-pl-50">';
-            echo '<button type="submit" class="be-btn be-btn-major be-lh-175" id="completion-session-submit"><i class="bi-send"></i> 发送</button>';
+            if (isset($this->page->requestLogin) && $this->page->requestLogin === true) {
+                echo '<a href="' . beUrl('Openai.Auth.login') . '" class="be-btn be-btn-major be-lh-175"><i class="bi-send"></i> 发送</a>';
+            } else {
+                echo '<button type="submit" class="be-btn be-btn-major be-lh-175" id="completion-session-submit"><i class="bi-send"></i> 发送</button>';
+            }
             echo '</div>';
             echo '</div>';
             echo '<div class="be-col-auto">';
