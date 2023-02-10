@@ -53,7 +53,7 @@ class Template extends Section
             foreach ($session->messages as $message) {
                 echo '<div class="be-row">';
                 echo '<div class="be-col-auto">';
-                echo '<span class="be-c-major be-fw-bold">我：</span>';
+                echo '<span class="be-c-major be-fw-bold">问：</span>';
                 echo '</div>';
                 echo '<div class="be-col be-c-major">';
                 echo $message->question;
@@ -63,7 +63,7 @@ class Template extends Section
 
                 echo '<div class="be-row be-mt-50 be-mb-200">';
                 echo '<div class="be-col-auto">';
-                echo '<span class="be-fw-bold">ChatGPT：</span>';
+                echo '<span class="be-fw-bold">签：</span>';
                 echo '</div>';
                 echo '<div class="be-col completion-session-message-answer">';
                 echo $message->answer;
@@ -71,14 +71,8 @@ class Template extends Section
                 echo '</div>';
             }
         } else {
-            echo '<div class="be-row be-mt-50 be-mb-200">';
-            echo '<div class="be-col-auto">';
-            echo '<span class="be-fw-bold">ChatGPT：</span>';
-            echo '</div>';
-            echo '<div class="be-col">';
-            echo '我是来自 OpenAI 实验室的 ChatGPT，有什么问题尽管问我吧。';
-            echo '<span class="be-c-font-6">（' . date('Y-m-d H:i:s') . '）</span>';
-            echo '</div>';
+            echo '<div class="be-mt-50 be-mb-200">';
+            echo '您好，我是来自 OpenAI 实验室的人工智能 ChatGPT。';
             echo '</div>';
         }
         echo '</div>';
@@ -120,11 +114,10 @@ class Template extends Section
         echo $this->getCssBackgroundColor('completion-session');
 
         echo '#' . $this->id . ' .completion-session-messages {';
-        echo 'min-height: 400px;';
-        echo 'height: 60vh;';
+        echo 'min-height: 60vh;';
         //echo 'padding: .5rem;';
         //echo 'border: var(--font-color-9) 1px solid;';
-        echo 'overflow-y: auto;';
+        //echo 'overflow-y: auto;';
         echo '}';
 
         echo '#' . $this->id . ' .completion-session-message-answer p {';
@@ -186,7 +179,7 @@ class Template extends Section
                             let html = "";
                             html += '<div class="be-row">';
                             html += '<div class="be-col-auto">';
-                            html += '<span class="be-c-major be-fw-bold">我：</span>';
+                            html += '<span class="be-c-major be-fw-bold">问：</span>';
                             html += '</div>';
                             html += '<div class="be-col be-c-major">';
                             html += json.session.latestMessage.question;
@@ -196,7 +189,7 @@ class Template extends Section
 
                             html += '<div class="be-row be-mt-50 be-mb-200">';
                             html += '<div class="be-col-auto">';
-                            html += '<span class="be-fw-bold">ChatGPT：</span>';
+                            html += '<span class="be-fw-bold">签：</span>';
                             html += '</div>';
                             html += '<div class="be-col completion-session-message-answer" id="completion-session-message-answer-' + json.session.latestMessage.id + '">';
                             html += '处理中.';
@@ -205,8 +198,8 @@ class Template extends Section
 
                             $messages.append(html);
 
-                            let scrollHeight = $messages.prop("scrollHeight");
-                            $messages.animate({scrollTop: scrollHeight}, 100);
+                            let scrollTo = $messages.offset().top + $messages.height() - $(window).height() + 20;
+                            $('html,body').animate({scrollTop:scrollTo},100);
 
                             $question.val("");
                             $submit.html('<i class="bi-send"></i> 回复中...');
@@ -298,8 +291,8 @@ class Template extends Section
                                 //$("#completion-session-message-answer-" + messageId).html(marked.parse(json.sessionMessage.answer));
                                 $("#completion-session-message-answer-" + messageId).html(json.sessionMessage.answer);
 
-                                let messagesCcrollHeight0 = $messages.prop("scrollHeight");
-                                $messages.animate({scrollTop: messagesCcrollHeight0}, 100);
+                                let scrollTo = $messages.offset().top + $messages.height() - $(window).height() + 20;
+                                $('html,body').animate({scrollTop:scrollTo},100);
 
                                 /*
                                 let $answer = $("#completion-session-message-answer-" + messageId);

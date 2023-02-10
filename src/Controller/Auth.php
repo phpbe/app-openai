@@ -9,6 +9,8 @@ class Auth
 
     /**
      * 登录
+     *
+     * @BeMenu("登录")
      * @BeRoute("/openai/login")
      */
     public function login()

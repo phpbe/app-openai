@@ -1,9 +1,9 @@
 <?php
 
-namespace Be\App\Openai\Section\CompletionSessions;
+namespace Be\App\Openai\Section\CompletionLatestSessions;
 
 /**
- * @BeConfig("ChatGPT 会话记录", icon="el-icon-thumb")
+ * @BeConfig("ChatGPT 最近会话", icon="el-icon-thumb")
  */
 class Config
 {
@@ -22,6 +22,28 @@ class Config
      * )
      */
     public string $width = 'default';
+
+    /**
+     * @BeConfigItem("标题",
+     *     driver = "FormItemInput"
+     * )
+     */
+    public string $title = '最近会话';
+
+    /**
+     * @BeConfigItem("展示多少个?",
+     *     driver = "FormItemSlider",
+     *     ui="return [':min' => 1, ':max' => 100];"
+     * )
+     */
+    public int $quantity = 10;
+
+    /**
+     * @BeConfigItem("查看更多链接",
+     *     driver = "FormItemInput"
+     * )
+     */
+    public string $more = '查看更多';
 
     /**
      * @BeConfigItem("背景颜色",

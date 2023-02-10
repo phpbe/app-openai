@@ -2,22 +2,19 @@
 
 namespace Be\App\Openai\Config\Page\Completion;
 
-class session
+class sessions
 {
 
-    public int $west = 30;
-    public int $center = 70;
+    public int $west = 0;
+    public int $center = 1;
     public int $east = 0;
-
-    public array $westSections = [
-        [
-            'name' => 'App.Openai.CompletionLatestSessions',
-        ],
-    ];
 
     public array $centerSections = [
         [
-            'name' => 'App.Openai.CompletionSession',
+            'name' => 'Theme.System.PageTitle',
+        ],
+        [
+            'name' => 'App.Openai.CompletionSessions',
         ],
     ];
 
@@ -27,7 +24,7 @@ class session
      *     driver = "FormItemInput"
      * )
      */
-    public string $title = '与 ChatGPT 聊天';
+    public string $title = 'ChatGPT 历史会话记录';
 
     /**
      * @BeConfigItem("Meta描述",
@@ -35,7 +32,7 @@ class session
      *     driver = "FormItemInput"
      * )
      */
-    public string $metaDescription = '与 ChatGPT 聊天';
+    public string $metaDescription = 'ChatGPT 历史会话记录';
 
     /**
      * @BeConfigItem("Meta关键词",
@@ -43,7 +40,7 @@ class session
      *     driver = "FormItemInput"
      * )
      */
-    public string $metaKeywords = 'ChatGPT';
+    public string $metaKeywords = 'ChatGPT,会话记录';
 
     /**
      * @BeConfigItem("页面标题",
