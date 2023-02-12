@@ -12,7 +12,7 @@ class Api
     /**
      * 应用列表
      */
-    public function completion(string $prompt, array $options = [])
+    public function textCompletion(string $prompt, array $options = [])
     {
         $url = 'https://api.openai.com/v1/completions';
 
@@ -45,11 +45,11 @@ class Api
 
         $response = json_decode($responseStr, true);
         if (!$response || !is_array($response)) {
-            throw new ServiceException('调用 OpenAi completions 接口未返回有效JSON数据');
+            throw new ServiceException('调用 OpenAi texts 接口未返回有效JSON数据');
         }
 
         if (!isset($response['choices'][0]['text'])) {
-            throw new ServiceException('调用 OpenAi completions 接口无返回有效数据');
+            throw new ServiceException('调用 OpenAi texts 接口无返回有效数据');
         }
 
         $answer = $response['choices'][0]['text'];

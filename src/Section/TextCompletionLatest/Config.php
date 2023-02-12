@@ -1,6 +1,6 @@
 <?php
 
-namespace Be\App\Openai\Section\CompletionLatestSessions;
+namespace Be\App\Openai\Section\TextCompletionLatest;
 
 /**
  * @BeConfig("ChatGPT 最近会话", icon="el-icon-thumb")

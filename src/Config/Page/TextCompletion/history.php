@@ -1,8 +1,8 @@
 <?php
 
-namespace Be\App\Openai\Config\Page\Completion;
+namespace Be\App\Openai\Config\Page\TextCompletion;
 
-class sessions
+class history
 {
 
     public int $west = 0;
@@ -14,7 +14,7 @@ class sessions
             'name' => 'Theme.System.PageTitle',
         ],
         [
-            'name' => 'App.Openai.CompletionSessions',
+            'name' => 'App.Openai.TextCompletionHistory',
         ],
     ];
 

@@ -5,31 +5,31 @@ namespace Be\App\Openai\Service;
 use Be\App\ServiceException;
 use Be\Be;
 
-class Completion
+class TextCompletion
 {
 
     /**
      * 删除会话
      *
-     * @param array $sessionIds
+     * @param array $textCompletionIds
      */
-    public function delete(array $sessionIds)
+    public function delete(array $textCompletionIds)
     {
-        if (count($sessionIds) === 0) return;
+        if (count($textCompletionIds) === 0) return;
 
         $db = Be::getDb();
         $db->startTransaction();
         try {
-            foreach ($sessionIds as $sessionId) {
-                $tupleSession = Be::getTuple('openai_completion_session');
+            foreach ($textCompletionIds as $textCompletionId) {
+                $tupleSession = Be::getTuple('openai_text_completion');
                 try {
-                    $tupleSession->load($sessionId);
+                    $tupleSession->load($textCompletionId);
                 } catch (\Throwable $t) {
-                    throw new ServiceException('会话（# ' . $sessionId . '）不存在！');
+                    throw new ServiceException('会话（# ' . $textCompletionId . '）不存在！');
                 }
 
-                Be::getTable('openai_completion_session_message')
-                    ->where('completion_session_id', $sessionId)
+                Be::getTable('openai_text_completion_message')
+                    ->where('text_completion_id', $textCompletionId)
                     ->delete();
 
                 $tupleSession->delete();

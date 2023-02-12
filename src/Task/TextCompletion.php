@@ -1,13 +1,14 @@
 <?php
+
 namespace Be\App\Openai\Task;
 
 use Be\Be;
 use Be\Task\Task;
 
 /**
- * @BeTask("调用API解决问签")
+ * @BeTask("调用API解决问签", schedule="* * * * *")
  */
-class Completion extends Task
+class TextCompletion extends Task
 {
 
     /**
@@ -30,30 +31,31 @@ class Completion extends Task
         $serviceApi = Be::getService('App.Openai.Api');
 
         $db = Be::getDb();
-        $sql = 'SELECT * FROM openai_completion_session_message WHERE is_complete = 0';
-        $messages = $db->getYieldObjects($sql);
 
+        $t0 = time();
         do {
             $incomplete = 0;
+            $sql = 'SELECT * FROM openai_text_completion_message WHERE is_complete = 0';
+            $messages = $db->getObjects($sql);
             foreach ($messages as $message) {
 
                 // 交互式会话
                 if ($message->line > 1) {
                     $prompt = '';
-                    $sql = 'SELECT * FROM openai_completion_session_message WHERE completion_session_id = ? ORDER BY line ASC';
-                    $messages = $db->getObjects($sql, [$message->completion_session_id]);
+                    $sql = 'SELECT * FROM openai_text_completion_message WHERE text_completion_id = ? ORDER BY line ASC';
+                    $messages = $db->getObjects($sql, [$message->text_completion_id]);
                     foreach ($messages as $m) {
-                        $prompt .= 'Q: ' . $m->question . "\n\n";
+                        $prompt .= 'Q: ' . $m->prompt . "\n\n";
                         $prompt .= 'A: ' . $m->answer . "\n\n";
                     }
 
                 } else {
-                    $prompt = $message->question;
+                    $prompt = $message->prompt;
                 }
 
                 $hasError = false;
                 try {
-                    $answer = $serviceApi->completion($prompt);
+                    $answer = $serviceApi->textCompletion($prompt);
                 } catch (\Throwable $t) {
                     $answer = $t->getMessage();
                     $hasError = true;
@@ -71,27 +73,40 @@ class Completion extends Task
                 }
 
                 $obj->update_time = date('Y-m-d H:i:s');
-                $db->update('openai_completion_session_message', $obj);
+                $db->update('openai_text_completion_message', $obj);
 
                 $obj = new \stdClass();
-                $obj->id = $message->completion_session_id ;
+                $obj->id = $message->text_completion_id;
                 $obj->update_time = date('Y-m-d H:i:s');
-                $db->update('openai_completion_session', $obj);
+                $db->update('openai_text_completion', $obj);
             }
 
-        } while($incomplete > 0);
+            $t1 = time();
+            if ($t1 - $t0 > $this->timeout) {
+                break;
+            }
+
+            if ($incomplete > 0) {
+                if (Be::getRuntime()->isSwooleMode()) {
+                    \Swoole\Coroutine::sleep(1);
+                } else {
+                    sleep(1);
+                }
+            }
+
+        } while ($incomplete > 0);
 
 
         // 结整超过1天的的会话
-        $sql = 'SELECT * FROM openai_completion_session WHERE is_complete = 0';
-        $sessions = $db->getYieldObjects($sql);
-        foreach ($sessions as $session) {
-            if (strlen($session->update_time) - time() > 3600) {
+        $sql = 'SELECT * FROM openai_text_completion WHERE is_complete = 0';
+        $textCompletions = $db->getObjects($sql);
+        foreach ($textCompletions as $textCompletion) {
+            if (strlen($textCompletion->update_time) - time() > 3600) {
                 $obj = new \stdClass();
-                $obj->id = $message->completion_session_id ;
+                $obj->id = $textCompletion->text_completion_id;
                 $obj->is_complete = 1;
                 $obj->update_time = date('Y-m-d H:i:s');
-                $db->update('openai_completion_session', $obj);
+                $db->update('openai_text_completion', $obj);
             }
         }
 

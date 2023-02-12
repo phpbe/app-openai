@@ -2,8 +2,6 @@
 
 namespace Be\App\Openai\Controller\Admin;
 
-use Be\AdminPlugin\Detail\Item\DetailItemSwitch;
-use Be\AdminPlugin\Detail\Item\DetailItemToggleIcon;
 use Be\AdminPlugin\Form\Item\FormItemSelect;
 use Be\AdminPlugin\Table\Item\TableItemLink;
 use Be\AdminPlugin\Table\Item\TableItemSelection;
@@ -17,14 +15,14 @@ use Be\Be;
  * @BeMenuGroup("文本应签", icon = "bi-chat-text", ordering="1")
  * @BePermissionGroup("文本应签")
  */
-class Completion extends Auth
+class TextCompletion extends Auth
 {
 
     /**
      * @BeMenu("会话", icon = "bi-chat", ordering="1.1")
      * @BePermission("会话", ordering="1.1")
      */
-    public function session()
+    public function index()
     {
         $request = Be::getRequest();
         $response = Be::getResponse();
@@ -63,14 +61,14 @@ class Completion extends Auth
         $response = Be::getResponse();
 
         try {
-            $question = $request->post('question', '');
-            $sessionId = $request->post('session_id', '');
-            $serviceCompletion = Be::getService('App.Openai.Completion');
-            $session = $serviceCompletion->send($question, $sessionId);
+            $prompt = $request->post('prompt', '');
+            $textCompletionId = $request->post('text_completion_id', '');
+            $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
+            $textCompletion = $serviceTextCompletion->send($prompt, $textCompletionId);
 
             $response->set('success', true);
             $response->set('message', '提交成功！');
-            $response->set('session', $session);
+            $response->set('textCompletion', $textCompletion);
             $response->json();
         } catch (\Throwable $t) {
             $response->set('success', false);
@@ -90,14 +88,14 @@ class Completion extends Auth
         $response = Be::getResponse();
 
         try {
-            $sessionId = $request->post('session_id', '');
-            $messageId = $request->post('message_id', '');
-            $serviceCompletion = Be::getService('App.Openai.Completion');
-            $sessionMessage = $serviceCompletion->waitSessionMessage($sessionId, $messageId);
+            $textCompletionId = $request->post('text_completion_id', '');
+            $textCompletionMessageId = $request->post('text_completion_message_id', '');
+            $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
+            $textCompletionMessage = $serviceTextCompletion->waitMessage($textCompletionId, $textCompletionMessageId);
 
             $response->set('success', true);
             $response->set('message', '获取成功！');
-            $response->set('sessionMessage', $sessionMessage);
+            $response->set('textCompletionMessage', $textCompletionMessage);
             $response->json();
 
         } catch (\Throwable $t) {
@@ -118,9 +116,9 @@ class Completion extends Auth
         $response = Be::getResponse();
 
         try {
-            $sessionId = $request->post('session_id', '');
-            $serviceCompletion = Be::getService('App.Openai.Completion');
-            $serviceCompletion->close($sessionId);
+            $textCompletionId = $request->post('text_completion_id', '');
+            $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
+            $serviceTextCompletion->close($textCompletionId);
 
             $response->set('success', true);
             $response->set('message', '关闭会话成功！');
@@ -137,11 +135,11 @@ class Completion extends Auth
      * @BeMenu("会话记录", icon = "bi-list", ordering="1.2")
      * @BePermission("会话记录", ordering="1.2")
      */
-    public function sessions()
+    public function history()
     {
         Be::getAdminPlugin('Curd')->setting([
             'label' => '会话记录',
-            'table' => 'openai_completion_session',
+            'table' => 'openai_text_completion',
             'grid' => [
                 'title' => '会话记录',
                 'orderBy' => 'create_time',
@@ -149,8 +147,8 @@ class Completion extends Auth
                 'form' => [
                     'items' => [
                         [
-                            'name' => 'name',
-                            'label' => '名称',
+                            'name' => 'prompt',
+                            'label' => '提问',
                         ],
                         [
                             'name' => 'is_complete',
@@ -168,7 +166,7 @@ class Completion extends Auth
                     'items' => [
                         [
                             'label' => '新增会话',
-                            'action' => 'session',
+                            'action' => 'index',
                             'target' => 'self', // 'ajax - ajax请求 / dialog - 对话框窗口 / drawer - 抽屉 / self - 当前页面 / blank - 新页面'
                             'ui' => [
                                 'icon' => 'el-icon-plus',
@@ -202,8 +200,8 @@ class Completion extends Auth
                             'width' => '50',
                         ],
                         [
-                            'name' => 'name',
-                            'label' => '名称',
+                            'name' => 'prompt',
+                            'label' => '提问',
                             'align' => 'left',
                             'driver' => TableItemLink::class,
                             'action' => 'messages',
@@ -268,11 +266,11 @@ class Completion extends Auth
         if ($postData) {
             $postData = json_decode($postData, true);
             if (isset($postData['row']['id']) && $postData['row']['id']) {
-                $sessionId = $postData['row']['id'];
-                $session = Be::getService('App.Openai.Completion')->getSession($sessionId);
-                $response->set('session', $session);
+                $textCompletionId = $postData['row']['id'];
+                $textCompletion = Be::getService('App.Openai.TextCompletion')->get($textCompletionId);
+                $response->set('textCompletion', $textCompletion);
 
-                $response->set('title', $session->name);
+                $response->set('title', $textCompletion->prompt);
                 $response->display(null, 'Blank');
             }
         }
@@ -291,17 +289,17 @@ class Completion extends Auth
         try {
             $postData = $request->json();
 
-            $sessionIds = [];
+            $textCompletionIds = [];
             if (isset($postData['selectedRows'])) {
                 foreach ($postData['selectedRows'] as $row) {
-                    $sessionIds[] = $row['id'];
+                    $textCompletionIds[] = $row['id'];
                 }
             } elseif (isset($postData['row'])) {
-                $sessionIds[] = $postData['row']['id'];
+                $textCompletionIds[] = $postData['row']['id'];
             }
 
-            if (count($sessionIds) > 0) {
-                Be::getService('App.Cms.Admin.Completion')->delete($sessionIds);
+            if (count($textCompletionIds) > 0) {
+                Be::getService('App.Cms.Admin.Text')->delete($textCompletionIds);
             }
 
             $response->set('success', true);

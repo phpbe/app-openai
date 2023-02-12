@@ -1,8 +1,8 @@
 <?php
 
-namespace Be\App\Openai\Config\Page\Completion;
+namespace Be\App\Openai\Config\Page\TextCompletion;
 
-class session
+class index
 {
 
     public int $west = 30;
@@ -11,13 +11,13 @@ class session
 
     public array $westSections = [
         [
-            'name' => 'App.Openai.CompletionLatestSessions',
+            'name' => 'App.Openai.TextCompletionLatest',
         ],
     ];
 
     public array $centerSections = [
         [
-            'name' => 'App.Openai.CompletionSession',
+            'name' => 'App.Openai.TextCompletion',
         ],
     ];
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Be\App\Openai\Section\CompletionSessions;
+namespace Be\App\Openai\Section\TextCompletionHistory;
 
 /**
  * @BeConfig("ChatGPT 会话记录", icon="el-icon-thumb")

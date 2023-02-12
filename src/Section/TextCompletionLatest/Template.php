@@ -1,6 +1,6 @@
 <?php
 
-namespace Be\App\Openai\Section\CompletionLatestSessions;
+namespace Be\App\Openai\Section\TextCompletionLatest;
 
 use Be\Be;
 use Be\Theme\Section;
@@ -19,7 +19,7 @@ class Template extends Section
 
         $this->css();
 
-        echo '<div class="completion-latest-sessions">';
+        echo '<div class="text-completion-latest">';
         if ($this->position === 'middle' && $this->config->width === 'default') {
             echo '<div class="be-container">';
         }
@@ -33,17 +33,17 @@ class Template extends Section
         echo $this->page->tag0('be-section-content');
 
 
-        $serviceCompletion = Be::getService('App.Openai.Completion');
-        $result = $serviceCompletion->getSessions([
+        $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
+        $result = $serviceTextCompletion->getHistory([
             'is_complete' => 1,
             'pageSize' => $this->config->quantity
         ]);
 
         if ($result['total'] > 0) {
-            foreach ($result['rows'] as $session) {
+            foreach ($result['rows'] as $textCompletion) {
                 echo '<div class="be-py-20">';
-                echo '<a class="be-d-block be-t-ellipsis-2" href="' . beUrl('Openai.Completion.session', ['session_id' => $session->id]) . '" title="' . $session->name . '">';
-                echo $session->name;
+                echo '<a class="be-d-block be-t-ellipsis-2" href="' . beUrl('Openai.TextCompletion.index', ['text_completion_id' => $textCompletion->id]) . '" title="' . $textCompletion->name . '">';
+                echo $textCompletion->prompt;
                 echo '</a>';
                 echo '</div>';
             }
@@ -53,7 +53,7 @@ class Template extends Section
 
         if (isset($section->config->more) && $section->config->more !== '') {
             echo '<div class="be-mt-100 be-bt-eee be-pt-100 be-ta-right">';
-            echo '<a href="' . beUrl('Openai.Completion.sessions') . '">' . $section->config->more . '</a>';
+            echo '<a href="' . beUrl('Openai.TextCompletion.history') . '">' . $section->config->more . '</a>';
             echo '</div>';
         }
 
@@ -68,9 +68,9 @@ class Template extends Section
     private function css()
     {
         echo '<style type="text/css">';
-        echo $this->getCssPadding('completion-latest-sessions');
-        echo $this->getCssMargin('completion-latest-sessions');
-        echo $this->getCssBackgroundColor('completion-latest-sessions');
+        echo $this->getCssPadding('text-completion-latest');
+        echo $this->getCssMargin('text-completion-latest');
+        echo $this->getCssBackgroundColor('text-completion-latest');
         echo '</style>';
     }
 

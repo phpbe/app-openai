@@ -1,6 +1,6 @@
 <?php
 
-namespace Be\App\Openai\Section\CompletionSessions;
+namespace Be\App\Openai\Section\TextCompletionHistory;
 
 use Be\Be;
 use Be\Theme\Section;
@@ -19,21 +19,21 @@ class Template extends Section
 
         $this->css();
 
-        echo '<div class="completion-sessions">';
+        echo '<div class="text-completion-history">';
         if ($this->position === 'middle' && $this->config->width === 'default') {
             echo '<div class="be-container">';
         }
 
         echo $this->page->tag0('be-section-content');
-        $serviceCompletion = Be::getService('App.Openai.Completion');
-        $result = $serviceCompletion->getSessions([
+        $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
+        $result = $serviceTextCompletion->getHistory([
             'is_complete' => 1,
             'pageSize' => $this->config->quantity
         ]);
 
         if ($result['total'] > 0) {
             $i = 0;
-            foreach ($result['rows'] as $session) {
+            foreach ($result['rows'] as $textCompletion) {
 
                 if ($i === 0) {
                     echo '<div class="be-mb-50">';
@@ -43,12 +43,12 @@ class Template extends Section
 
                 echo '<div class="be-row">';
                 echo '<div class="be-col">';
-                echo '<a class="be-d-block be-t-ellipsis-2" href="' . beUrl('Openai.Completion.session', ['session_id' => $session->id]) . '" title="' . $session->name . '">';
-                echo $session->name;
+                echo '<a class="be-d-block be-t-ellipsis-2" href="' . beUrl('Openai.TextCompletion.index', ['text_completion_id' => $textCompletion->id]) . '" title="' . $textCompletion->name . '">';
+                echo $textCompletion->prompt;
                 echo '</a>';
                 echo '</div>';
                 echo '<div class="be-col-auto be-c-font-6">';
-                echo $session->create_time;
+                echo $textCompletion->create_time;
                 echo '</div>';
                 echo '</div>';
 
@@ -70,7 +70,7 @@ class Template extends Section
             $html .= '<ul class="be-pagination" style="justify-content: center;">';
             $html .= '<li>';
             if ($page > 1) {
-                $url = beUrl('Openai.Completion.sessions', ['page' => ($page - 1)]);
+                $url = beUrl('Openai.TextCompletion.history', ['page' => ($page - 1)]);
                 $html .= '<a href="' . $url . '">' . beLang('App.Openai', 'PAGINATION.PREVIOUS') . '</a>';
             } else {
                 $html .= '<span>' . beLang('App.Openai', 'PAGINATION.PREVIOUS') . '</span>';
@@ -104,7 +104,7 @@ class Template extends Section
                     $html .= '<span>' . $i . '</span>';
                     $html .= '</li>';
                 } else {
-                    $url = beUrl('Openai.Completion.sessions', ['page' => $i]);
+                    $url = beUrl('Openai.TextCompletion.history', ['page' => $i]);
                     $html .= '<li>';
                     $html .= '<a href="' . $url . '">' . $i . '</a>';
                     $html .= '</li>';
@@ -117,7 +117,7 @@ class Template extends Section
 
             $html .= '<li>';
             if ($page < $pages) {
-                $url = beUrl('Openai.Completion.sessions', ['page' => ($page + 1)]);
+                $url = beUrl('Openai.TextCompletion.history', ['page' => ($page + 1)]);
                 $html .= '<a href="' . $url . '">' . beLang('App.Openai', 'PAGINATION.NEXT') . '</a>';
             } else {
                 $html .= '<span>' . beLang('App.Openai', 'PAGINATION.NEXT') . '</span>';
@@ -140,9 +140,9 @@ class Template extends Section
     private function css()
     {
         echo '<style type="text/css">';
-        echo $this->getCssPadding('completion-sessions');
-        echo $this->getCssMargin('completion-sessions');
-        echo $this->getCssBackgroundColor('completion-sessions');
+        echo $this->getCssPadding('text-completion-history');
+        echo $this->getCssMargin('text-completion-history');
+        echo $this->getCssBackgroundColor('text-completion-history');
         echo '</style>';
     }
     

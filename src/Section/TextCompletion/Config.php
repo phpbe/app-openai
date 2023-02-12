@@ -1,6 +1,6 @@
 <?php
 
-namespace Be\App\Openai\Section\CompletionSession;
+namespace Be\App\Openai\Section\TextCompletion;
 
 /**
  * @BeConfig("ChatGPT 会话", icon="el-icon-thumb")
