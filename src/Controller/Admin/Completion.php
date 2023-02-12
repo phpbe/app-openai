@@ -184,7 +184,7 @@ class Completion extends Auth
                             'label' => '批量删除',
                             'action' => 'delete',
                             'target' => 'ajax',
-                            'confirm' => '确认要删除么？',
+                            'confirm' => '此操作将从数据库彻底删除，确认要执行么？',
                             'ui' => [
                                 'icon' => 'el-icon-delete',
                                 'type' => 'danger'
@@ -243,7 +243,7 @@ class Completion extends Auth
                             [
                                 'label' => '删除',
                                 'action' => 'delete',
-                                'confirm' => '确认要删除么？',
+                                'confirm' => '此操作将从数据库彻底删除，确认要执行么？',
                                 'target' => 'ajax',
                                 'ui' => [
                                     'type' => 'danger'
@@ -275,6 +275,42 @@ class Completion extends Auth
                 $response->set('title', $session->name);
                 $response->display(null, 'Blank');
             }
+        }
+    }
+
+    /**
+     * 会话记录-删除
+     *
+     * @BePermission("会话记录")
+     */
+    public function delete()
+    {
+        $request = Be::getRequest();
+        $response = Be::getResponse();
+
+        try {
+            $postData = $request->json();
+
+            $sessionIds = [];
+            if (isset($postData['selectedRows'])) {
+                foreach ($postData['selectedRows'] as $row) {
+                    $sessionIds[] = $row['id'];
+                }
+            } elseif (isset($postData['row'])) {
+                $sessionIds[] = $postData['row']['id'];
+            }
+
+            if (count($sessionIds) > 0) {
+                Be::getService('App.Cms.Admin.Completion')->delete($sessionIds);
+            }
+
+            $response->set('success', true);
+            $response->set('message', '删除成功！');
+            $response->json();
+        } catch (\Throwable $t) {
+            $response->set('success', false);
+            $response->set('message', $t->getMessage());
+            $response->json();
         }
     }
 
