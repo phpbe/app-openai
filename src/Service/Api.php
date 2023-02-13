@@ -50,6 +50,16 @@ class Api
             throw new ServiceException('调用 OpenAi 文本应签（/v1/completions）接口未返回有效JSON数据');
         }
 
+        if (isset($response['error'])) {
+            $message = '调用 OpenAi 文本应签（/v1/completions）接口出错';
+            if (isset($response['error']['message'])) {
+                $message .= '：' . $response['error']['message'];
+            } else {
+                $message .= '！';
+            }
+            throw new ServiceException($message);
+        }
+
         if (!isset($response['choices'][0]['text'])) {
             throw new ServiceException('调用 OpenAi 文本应签（/v1/completions）接口无返回有效数据');
         }
