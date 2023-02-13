@@ -82,7 +82,7 @@
                         textCompletionMessageId = json.textCompletion.latestMessage.id;
 
                         let html = "";
-                        html += '<div class="be-row">';
+                        html += '<div class="be-row be-mt-200">';
                         html += '<div class="be-col-auto">';
                         html += '<span class="be-c-major be-fw-bold">问：</span>';
                         html += '</div>';
@@ -92,7 +92,7 @@
                         html += '</div>';
                         html += '</div>';
 
-                        html += '<div class="be-row be-mt-50 be-mb-200">';
+                        html += '<div class="be-row be-mt-50">';
                         html += '<div class="be-col-auto">';
                         html += '<span class="be-fw-bold">签：</span>';
                         html += '</div>';

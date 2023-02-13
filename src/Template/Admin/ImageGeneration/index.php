@@ -30,7 +30,7 @@
                         </div>
 
                         <div class="be-mt-50">
-                            <input type="radio" class="be-radio" name="size" value="512x512" id="size-512" checked>< label for="size-512">512 x 512</label>
+                            <input type="radio" class="be-radio" name="size" value="512x512" id="size-512" checked> <label for="size-512">512 x 512</label>
                         </div>
 
                         <div class="be-mt-50">
