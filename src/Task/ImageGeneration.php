@@ -23,7 +23,7 @@ class ImageGeneration extends Task
      *
      * @var null|int
      */
-    protected $timeout = 600;
+    protected $timeout = 300;
 
     public function execute()
     {

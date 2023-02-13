@@ -41,7 +41,7 @@ class Api
         //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($data, true) . "\n", FILE_APPEND);
         //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($headers, true) . "\n", FILE_APPEND);
 
-        $responseStr = \Be\Util\Net\Curl::postJson($url, $data, $headers, [CURLOPT_TIMEOUT => 300]);
+        $responseStr = \Be\Util\Net\Curl::postJson($url, $data, $headers, [CURLOPT_TIMEOUT => 120]);
 
         //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($responseStr, true) . "\n\n\n", FILE_APPEND);
 
@@ -95,7 +95,7 @@ class Api
         //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($data, true) . "\n", FILE_APPEND);
         //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($headers, true) . "\n", FILE_APPEND);
 
-        $responseStr = \Be\Util\Net\Curl::postJson($url, $data, $headers, [CURLOPT_TIMEOUT => 300]);
+        $responseStr = \Be\Util\Net\Curl::postJson($url, $data, $headers, [CURLOPT_TIMEOUT => 120]);
 
         //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($responseStr, true) . "\n\n\n", FILE_APPEND);
 
