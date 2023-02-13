@@ -1,9 +1,9 @@
 <?php
 
-namespace Be\App\Openai\Section\TextCompletion;
+namespace Be\App\Openai\Section\ImageGeneration;
 
 /**
- * @BeConfig("ChatGPT 会话", icon="bi-chat")
+ * @BeConfig("生成图像", icon="bi-image")
  */
 class Config
 {

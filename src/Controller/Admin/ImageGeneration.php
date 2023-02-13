@@ -299,7 +299,7 @@ class ImageGeneration extends Auth
             }
 
             if (count($imageGenerationIds) > 0) {
-                Be::getService('App.Cms.Admin.ImageGeneration')->delete($imageGenerationIds);
+                Be::getService('App.Openai.Admin.ImageGeneration')->delete($imageGenerationIds);
             }
 
             $response->set('success', true);

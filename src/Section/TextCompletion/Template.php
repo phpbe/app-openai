@@ -39,7 +39,7 @@ class Template extends Section
         if ($textCompletion === false) {
             echo '<button type="submit" class="be-btn be-btn-major" id="text-completion-new"><i class="bi-plus"></i> 发起新会话</button>';
         } else {
-            echo '<a href="' . beUrl('Openai.Text.completion') . '" class="be-btn be-btn-major"><i class="bi-plus"></i> 发起新会话</a>';
+            echo '<a href="' . beUrl('Openai.TextCompletion.index') . '" class="be-btn be-btn-major"><i class="bi-plus"></i> 发起新会话</a>';
         }
         echo '</div>';
         echo '</div>';
@@ -164,7 +164,7 @@ class Template extends Section
                 $submit.prop('disabled', true).html('<i class="bi-send"></i> 发送中...');
 
                 $.ajax({
-                    url: "<?php echo beUrl('Openai.Text.completionSend'); ?>",
+                    url: "<?php echo beUrl('Openai.TextCompletion.send'); ?>",
                     data: {
                         text_completion_id: textCompletionId,
                         prompt: $.trim($prompt.val())
@@ -236,14 +236,14 @@ class Template extends Section
 
             $newCompletion.click(function () {
                 $.ajax({
-                    url: "<?php echo beUrl('Openai.Text.completionClose'); ?>",
+                    url: "<?php echo beUrl('Openai.TextCompletion.close'); ?>",
                     data: {
                         text_completion_id: textCompletionId,
                     },
                     method: "POST",
                     success: function (json) {
                         if (json.success) {
-                            window.location.href = "<?php echo beUrl('Openai.Text.completion'); ?>";
+                            window.location.href = "<?php echo beUrl('Openai.TextCompletion.index'); ?>";
                         } else {
                             alert(json.message);
                         }
@@ -276,7 +276,7 @@ class Template extends Section
                 receiving = true;
                 $.ajax({
                     async: true,
-                    url: "<?php echo beUrl('Openai.Text.completionReceive'); ?>",
+                    url: "<?php echo beUrl('Openai.TextCompletion.receive'); ?>",
                     data: {
                         text_completion_id: textCompletionId,
                         text_completion_message_id: textCompletionMessageId,

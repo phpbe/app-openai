@@ -3,7 +3,7 @@
 namespace Be\App\Openai\Section\TextCompletionHistory;
 
 /**
- * @BeConfig("ChatGPT 会话记录", icon="el-icon-thumb")
+ * @BeConfig("ChatGPT 会话记录", icon="bi-chat")
  */
 class Config
 {

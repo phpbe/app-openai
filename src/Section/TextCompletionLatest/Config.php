@@ -3,7 +3,7 @@
 namespace Be\App\Openai\Section\TextCompletionLatest;
 
 /**
- * @BeConfig("ChatGPT 最近会话", icon="el-icon-thumb")
+ * @BeConfig("ChatGPT 最近会话", icon="bi-chat")
  */
 class Config
 {

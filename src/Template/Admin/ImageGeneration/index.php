@@ -26,15 +26,15 @@
 
                     <div class="be-mt-50">
                         <div class="be-mt-50">
-                            <input type="radio" class="be-radio" name="size" value="256x256" id="size-256"><label for="size-256">256 x 256</label>
+                            <input type="radio" class="be-radio" name="size" value="256x256" id="size-256"> <label for="size-256">256 x 256</label>
                         </div>
 
                         <div class="be-mt-50">
-                            <input type="radio" class="be-radio" name="size" value="512x512" id="size-512" checked><label for="size-512">512 x 512</label>
+                            <input type="radio" class="be-radio" name="size" value="512x512" id="size-512" checked>< label for="size-512">512 x 512</label>
                         </div>
 
                         <div class="be-mt-50">
-                            <input type="radio" class="be-radio" name="size" value="1024x1024" id="size-1024"><label for="size-1024">1024 x 1024</label>
+                            <input type="radio" class="be-radio" name="size" value="1024x1024" id="size-1024"> <label for="size-1024">1024 x 1024</label>
                         </div>
                     </div>
 
