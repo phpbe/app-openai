@@ -33,7 +33,7 @@ class Template extends Section
         <form id="form-image-generation">
             <div class="be-row">
                 <div class="be-col-24 be-md-col">
-                    <div class="be-fs-110">
+                    <div class="be-mt-50">
                         尽可能详细描述下您需要生成的图像：
                     </div>
 
@@ -46,7 +46,7 @@ class Template extends Section
                     <div class="be-pl-200 be-mt-150"></div>
                 </div>
                 <div class="be-col-24 be-md-col-auto">
-                    <div class="be-fs-110">
+                    <div class="be-mt-50">
                         图像大小：
                     </div>
 

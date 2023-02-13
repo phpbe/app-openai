@@ -10,7 +10,7 @@ class TextCompletion extends Base
     /**
      * ChatGPT
      *
-     * @BeMenu("ChatGPT")
+     * @BeMenu("ChatGPT 提问应签")
      * @BeRoute("/openai/chatgpt")
      */
     public function index()
@@ -141,7 +141,7 @@ class TextCompletion extends Base
     /**
      * ChatGPT 历史会话
      *
-     * @BeMenu("ChatGPT 历史会话")
+     * @BeMenu("ChatGPT 提问应签历史记录")
      * @BeRoute("/openai/chatgpt/history")
      */
     public function history()

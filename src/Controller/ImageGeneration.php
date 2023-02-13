@@ -13,7 +13,7 @@ class ImageGeneration extends Base
     /**
      * 生成图像
      *
-     * @BeMenu("生成图像")
+     * @BeMenu("ChatGPT 生成图像")
      * @BeRoute("/openai/image/generation")
      */
     public function index()

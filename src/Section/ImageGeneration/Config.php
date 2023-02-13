@@ -28,7 +28,7 @@ class Config
      *     driver = "FormItemInput"
      * )
      */
-    public string $title = 'ChatGPT';
+    public string $title = 'ChatGPT 生成图像';
 
     /**
      * @BeConfigItem("背景颜色",
