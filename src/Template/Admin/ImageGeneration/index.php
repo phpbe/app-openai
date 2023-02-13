@@ -1,27 +1,66 @@
 
 
 <be-page-content>
-    <div class="be-bc-fff be-p-150">
-        <div class="be-fs-110">
-            尽可能详细描述下您需要生成的图像。
+
+
+    <form id="form-image-generation">
+        <div class="be-p-150 be-bc-fff">
+            <div class="be-row">
+                <div class="be-col-24 be-md-col">
+                    <div class="be-fs-110">
+                        尽可能详细描述下您需要生成的图像：
+                    </div>
+
+                    <div class="be-mt-50">
+                        <textarea name="prompt" class=" be-textarea" style="width: 100%; height: 120px;" id="image-generation-prompt" placeholder="请输入您的需求，按回车发送"></textarea>
+                    </div>
+                </div>
+
+                <div class="be-col-24 be-md-col-auto">
+                    <div class="be-pl-200 be-mt-150"></div>
+                </div>
+                <div class="be-col-24 be-md-col-auto">
+                    <div class="be-fs-110">
+                        图像大小：
+                    </div>
+
+                    <div class="be-mt-50">
+                        <div class="be-mt-50">
+                            <input type="radio" class="be-radio" name="size" value="256x256" id="size-256"><label for="size-256">256 x 256</label>
+                        </div>
+
+                        <div class="be-mt-50">
+                            <input type="radio" class="be-radio" name="size" value="512x512" id="size-512" checked><label for="size-512">512 x 512</label>
+                        </div>
+
+                        <div class="be-mt-50">
+                            <input type="radio" class="be-radio" name="size" value="1024x1024" id="size-1024"><label for="size-1024">1024 x 1024</label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="be-mt-100">
+                <button type="submit" class="be-btn be-btn-major" id="image-generation-submit"><i class="bi-send"></i> 发送</button>
+            </div>
         </div>
 
-        <div class="be-mt-100">
-            <textarea name="prompt" style="width: 100%; height: 120px;" id="image-generation-prompt" placeholder="请输入您的需求，按回车发送">111</textarea>
-        </div>
+    </form>
 
-        <div class="be-mt-100">
-            <button type="submit" class="be-btn be-btn-major" id="image-generation-submit"><i class="bi-send"></i> 生成</button>
-            <button type="button" class="be-btn be-btn-green" id="image-generation-new"><i class="bi-plus"></i> 重新生成</button>
-        </div>
-    </div>
-
-    <div class="be-mt-150 be-bc-fff be-p-150">
+    <div class="be-mt-150 be-p-150 be-bc-fff">
         <div class="be-fs-110">
             生成结果：
-            <div id="image-generation-result"></div>
         </div>
 
+        <div class="be-mt-50 be-row">
+            <div class="be-col-24 be-md-col">
+                <div class="be-mt-50" id="image-generation-result"></div>
+            </div>
+            <div class="be-col-24 be-md-col-auto">
+
+            </div>
+        </div>
     </div>
 
 
@@ -38,7 +77,6 @@
         let $result = $("#image-generation-result");
         let $prompt = $("#image-generation-prompt");
         let $submit = $("#image-generation-submit");
-        let $newSession = $("#image-generation-new");
 
         $prompt.change(check).keydown(function (event) {
             check();
@@ -58,9 +96,7 @@
 
             $.ajax({
                 url: "<?php echo beAdminUrl('Openai.ImageGeneration.send'); ?>",
-                data: {
-                    prompt: $.trim($prompt.val())
-                },
+                data: $("#form-image-generation").serialize(),
                 method: "POST",
                 success: function (json) {
                     if (json.success) {
@@ -100,10 +136,6 @@
             });
         });
 
-        $newSession.click(function () {
-            window.location.href = "<?php echo beAdminUrl('Openai.ImageGeneration.index'); ?>";
-        });
-
         function check() {
             if (!handling) {
                 if ($.trim($prompt.val()) === "") {
@@ -112,8 +144,6 @@
                     $submit.prop('disabled', false);
                 }
             }
-
-            $newSession.prop('disabled', true);
         }
 
         check();
@@ -131,9 +161,14 @@
                     if (json.success) {
 
                         handling = false;
-                        $submit.prop('disabled', false).html('<i class="bi-send"></i> 生成');
+                        $submit.prop('disabled', false).html('<i class="bi-send"></i> 发送');
 
-                        let html = '<img src="' + json.imageGeneration.url + '" alt="">';
+                        let html;
+                        if (json.imageGeneration.url.indexOf("http://") === 0 || json.imageGeneration.url.indexOf("https://") === 0) {
+                            html = '<img src="' + json.imageGeneration.url + '" alt="" style="max-width: 100%; max-height: 100%;">';
+                        } else {
+                            html = json.imageGeneration.url;
+                        }
                         $result.html(html);
 
                         check();

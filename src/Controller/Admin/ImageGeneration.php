@@ -2,9 +2,10 @@
 
 namespace Be\App\Openai\Controller\Admin;
 
-use Be\AdminPlugin\Detail\Item\DetailItemSwitch;
+use Be\AdminPlugin\Detail\Item\DetailItemCode;
+use Be\AdminPlugin\Detail\Item\DetailItemImage;
 use Be\AdminPlugin\Detail\Item\DetailItemToggleIcon;
-use Be\AdminPlugin\Form\Item\FormItemSelect;
+use Be\AdminPlugin\Table\Item\TableItemImage;
 use Be\AdminPlugin\Table\Item\TableItemLink;
 use Be\AdminPlugin\Table\Item\TableItemSelection;
 use Be\AdminPlugin\Table\Item\TableItemToggleIcon;
@@ -21,8 +22,8 @@ class ImageGeneration extends Auth
 {
 
     /**
-     * @BeMenu("生成", icon = "bi-image-alt", ordering="1.1")
-     * @BePermission("生成", ordering="1.1")
+     * @BeMenu("生成图像", icon = "bi-image-alt", ordering="1.1")
+     * @BePermission("生成图像", ordering="1.1")
      */
     public function index()
     {
@@ -34,7 +35,7 @@ class ImageGeneration extends Auth
     }
 
     /**
-     * @BePermission("会话")
+     * @BePermission("生成")
      */
     public function pop()
     {
@@ -53,9 +54,9 @@ class ImageGeneration extends Auth
     }
 
     /**
-     * 会话-发送
+     * 生成图像-发送
      *
-     * @BePermission("会话")
+     * @BePermission("生成图像")
      */
     public function send()
     {
@@ -63,14 +64,12 @@ class ImageGeneration extends Auth
         $response = Be::getResponse();
 
         try {
-            $prompt = $request->post('prompt', '');
-            $textCompletionId = $request->post('text_completion_id', '');
-            $serviceImage = Be::getService('App.Openai.Image');
-            $textCompletion = $serviceImage->send($prompt, $textCompletionId);
+            $serviceImageGeneration = Be::getService('App.Openai.ImageGeneration');
+            $imageGeneration = $serviceImageGeneration->send($request->post());
 
             $response->set('success', true);
             $response->set('message', '提交成功！');
-            $response->set('textCompletion', $textCompletion);
+            $response->set('imageGeneration', $imageGeneration);
             $response->json();
         } catch (\Throwable $t) {
             $response->set('success', false);
@@ -80,9 +79,9 @@ class ImageGeneration extends Auth
     }
 
     /**
-     * 会话-接收
+     * 生成图像-接收
      *
-     * @BePermission("会话")
+     * @BePermission("生成图像")
      */
     public function receive()
     {
@@ -90,14 +89,13 @@ class ImageGeneration extends Auth
         $response = Be::getResponse();
 
         try {
-            $textCompletionId = $request->post('text_completion_id', '');
-            $textCompletionMessageId = $request->post('text_completion_message_id', '');
-            $serviceImage = Be::getService('App.Openai.Image');
-            $textCompletionMessage = $serviceImage->waitSessionMessage($textCompletionId, $textCompletionMessageId);
+            $imageGenerationId = $request->post('image_generation_id', '');
+            $serviceImageGeneration = Be::getService('App.Openai.ImageGeneration');
+            $imageGeneration = $serviceImageGeneration->wait($imageGenerationId);
 
             $response->set('success', true);
             $response->set('message', '获取成功！');
-            $response->set('textCompletionMessage', $textCompletionMessage);
+            $response->set('imageGeneration', $imageGeneration);
             $response->json();
 
         } catch (\Throwable $t) {
@@ -133,7 +131,7 @@ class ImageGeneration extends Auth
                 'titleRightToolbar' => [
                     'items' => [
                         [
-                            'label' => '新增会话',
+                            'label' => '生成新图像',
                             'action' => 'index',
                             'target' => 'self', // 'ajax - ajax请求 / dialog - 对话框窗口 / drawer - 抽屉 / self - 当前页面 / blank - 新页面'
                             'ui' => [
@@ -168,24 +166,27 @@ class ImageGeneration extends Auth
                             'width' => '50',
                         ],
                         [
-                            'name' => 'name',
-                            'label' => '名称',
+                            'name' => 'prompt',
+                            'label' => '提问',
                             'align' => 'left',
                             'driver' => TableItemLink::class,
-                            'action' => 'messages',
+                            'task' => 'detail',
                             'target' => 'drawer',
                             'drawer' => [
                                 'width' => '75%',
                             ],
                         ],
                         [
-                            'name' => 'lines',
-                            'label' => '行数',
-                            'width' => '90',
+                            'name' => 'url',
+                            'label' => '生成图像',
+                            'driver' => TableItemImage::class,
+                            'width' => '60',
+                            'action' => 'view',
+                            'target' => 'blank',
                         ],
                         [
                             'name' => 'is_complete',
-                            'label' => '是否关闭',
+                            'label' => '是否完成',
                             'driver' => TableItemToggleIcon::class,
                             'width' => '120',
                         ],
@@ -219,13 +220,66 @@ class ImageGeneration extends Auth
                     ],
                 ],
             ],
+
+            'detail' => [
+                'form' => [
+                    'items' => [
+                        [
+                            'name' => 'id',
+                            'label' => 'ID',
+                        ],
+                        [
+                            'name' => 'prompt',
+                            'label' => '提问',
+                        ],
+                        [
+                            'name' => 'options',
+                            'label' => '参数',
+                            'driver' => DetailItemCode::class,
+                            'language' => 'json',
+                            'value' => function ($row) {
+                                return json_encode(unserialize($row['options']));
+                            },
+                        ],
+                        [
+                            'name' => 'image',
+                            'label' => '生成图像',
+                            'driver' => DetailItemImage::class,
+                            'value' => function ($row) {
+                                return  $row['url'];
+                            },
+                        ],
+                        [
+                            'name' => 'url',
+                            'label' => '生成图像网址',
+                        ],
+                        [
+                            'name' => 'times',
+                            'label' => '失败重试次数',
+                        ],
+                        [
+                            'name' => 'is_complete',
+                            'driver' => DetailItemToggleIcon::class,
+                            'label' => '是否完成',
+                        ],
+                        [
+                            'name' => 'create_time',
+                            'label' => '创建时间',
+                        ],
+                        [
+                            'name' => 'update_time',
+                            'label' => '更新时间',
+                        ],
+                    ]
+                ],
+            ],
         ])->execute();
     }
 
     /**
      * 会话记录-删除
      *
-     * @BePermission("会话记录")
+     * @BePermission("生成图像记录")
      */
     public function delete()
     {
@@ -235,17 +289,17 @@ class ImageGeneration extends Auth
         try {
             $postData = $request->json();
 
-            $textCompletionIds = [];
+            $imageGenerationIds = [];
             if (isset($postData['selectedRows'])) {
                 foreach ($postData['selectedRows'] as $row) {
-                    $textCompletionIds[] = $row['id'];
+                    $imageGenerationIds[] = $row['id'];
                 }
             } elseif (isset($postData['row'])) {
-                $textCompletionIds[] = $postData['row']['id'];
+                $imageGenerationIds[] = $postData['row']['id'];
             }
 
-            if (count($textCompletionIds) > 0) {
-                Be::getService('App.Cms.Admin.Image')->delete($textCompletionIds);
+            if (count($imageGenerationIds) > 0) {
+                Be::getService('App.Cms.Admin.ImageGeneration')->delete($imageGenerationIds);
             }
 
             $response->set('success', true);
@@ -257,5 +311,32 @@ class ImageGeneration extends Auth
             $response->json();
         }
     }
+
+    /**
+     * @BePermission("生成图像记录")
+     */
+    public function view()
+    {
+        $request = Be::getRequest();
+        $response = Be::getResponse();
+
+        $postData = $request->post('data', '', '');
+        if ($postData) {
+            $postData = json_decode($postData, true);
+            if (isset($postData['row']['id']) && $postData['row']['id']) {
+                $imageGenerationId = $postData['row']['id'];
+                $imageGeneration = Be::getService('App.Openai.ImageGeneration')->get($imageGenerationId);
+                $substr = substr($imageGeneration->url,0, 7);
+                if ($substr === 'http://' || $substr === 'https:/') {
+                    $response->redirect( $imageGeneration->url);
+                } else {
+                    $response->write($imageGeneration->url);
+                    $response->end();
+                }
+            }
+        }
+    }
+
+
 
 }

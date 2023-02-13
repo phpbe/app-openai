@@ -30,7 +30,7 @@
                 </div>
                 <div class="be-col-auto">
                     <div class="be-pl-50">
-                        <button type="button" class="be-btn be-btn-major" id="text-completion-new"><i class="bi-plus"></i> 发起新会话</button>
+                        <button type="button" class="be-btn be-btn-green" id="text-completion-new"><i class="bi-plus"></i> 发起新会话</button>
                     </div>
                 </div>
             </div>

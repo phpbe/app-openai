@@ -82,8 +82,7 @@ class ImageGeneration
             throw new ServiceException('生成图像（# ' . $imageGenerationId . '）不存在！');
         }
 
-        $imageGeneration = $tupleImageGeneration->toObject();
-        return $imageGeneration;
+        return $tupleImageGeneration->toObject();
     }
 
     /**
@@ -92,12 +91,28 @@ class ImageGeneration
      * @param string $prompt
      * @return object
      */
-    public function send(string $prompt): object
+    public function send($formData): object
     {
-        $prompt = trim($prompt);
+        if (!isset($formData['prompt']) || !is_string($formData['prompt'])) {
+            throw new ServiceException('提问内容缺失！');
+        }
+
+        $prompt = trim($formData['prompt']);
         if ($prompt === '') {
             throw new ServiceException('提问内容不可为空！');
         }
+
+        if (!isset($formData['size']) || !is_string($formData['size'])) {
+            $formData['size'] = '1024x1024';
+        }
+
+        if (!in_array($formData['size'], ['256x256', '512x512', '1024x1024'])) {
+            throw new ServiceException('图像尺寸不合法！');
+        }
+
+        $options = [
+            'size' =>  $formData['size'],
+        ];
 
         $db = Be::getDb();
 
@@ -109,8 +124,10 @@ class ImageGeneration
         try {
 
             $tupleImageGeneration->prompt = $prompt;
+            $tupleImageGeneration->options = serialize($options);
             $tupleImageGeneration->url = '';
             $tupleImageGeneration->local_url = '';
+            $tupleImageGeneration->times = 0;
             $tupleImageGeneration->is_complete = 0;
             $tupleImageGeneration->create_time = $now;
             $tupleImageGeneration->update_time = $now;
@@ -124,7 +141,7 @@ class ImageGeneration
             $db->rollback();
             Be::getLog()->error($t);
 
-            throw new ServiceException(($isNew ? '新建' : '编辑') . '生成图像发生异常！');
+            throw new ServiceException('生成图像发生异常！');
         }
 
         return $tupleImageGeneration->toObject();
@@ -134,37 +151,22 @@ class ImageGeneration
      * 等待消息
      *
      * @param string $imageGenerationId 生成图像ID
-     * @param string $imageGenerationMessageId 消息ID
      * @param int $timeout 超时时间
      * @return object
      */
-    public function waitMessage(string $imageGenerationId, string $imageGenerationMessageId, int $timeout = 15): object
+    public function wait(string $imageGenerationId, int $timeout = 15): object
     {
         $t0 = microtime(1);
-
-        $tupleImageGeneration = Be::getTuple('openai_image_generation');
-        try {
-            $tupleImageGeneration->load($imageGenerationId);
-        } catch (\Throwable $t) {
-            throw new ServiceException('生成图像（# ' . $imageGenerationId . '）不存在！');
-        }
-
-        if ($tupleImageGeneration->is_complete === 1) {
-            throw new ServiceException('生成图像已关闭！');
-        }
-
         while (1) {
-            $tableImageGenerationMessage = Be::getTuple('openai_image_generation_message');
+
+            $tupleImageGeneration = Be::getTuple('openai_image_generation');
             try {
-                $tableImageGenerationMessage->load($imageGenerationMessageId);
+                $tupleImageGeneration->load($imageGenerationId);
             } catch (\Throwable $t) {
-                throw new ServiceException('生成图像消息（# ' . $imageGenerationMessageId . '）不存在！');
+                throw new ServiceException('生成图像（# ' . $imageGenerationId . '）不存在！');
             }
 
-            $imageGenerationMessage = $tableImageGenerationMessage->toObject();
-            $imageGenerationMessage->answer = $this->formatAnswer($imageGenerationMessage->answer);
-
-            if ($imageGenerationMessage->is_complete === 1) {
+            if ($tupleImageGeneration->is_complete === 1) {
                 break;
             }
 
@@ -180,43 +182,8 @@ class ImageGeneration
             }
         }
 
-        return $imageGenerationMessage;
-    }
-
-    /**
-     * 关闭
-     *
-     * @param string $imageGenerationId
-     * @return object
-     */
-    public function close(string $imageGenerationId): object
-    {
-        $tupleImageGeneration = Be::getTuple('openai_image_generation');
-        try {
-            $tupleImageGeneration->load($imageGenerationId);
-        } catch (\Throwable $t) {
-            throw new ServiceException('生成图像（# ' . $imageGenerationId . '）不存在！');
-        }
-
-        if ($tupleImageGeneration->is_complete != 1) {
-            $tupleImageGeneration->is_complete = 1;;
-            $tupleImageGeneration->update_time = date('Y-m-d H:i:s');
-            $tupleImageGeneration->update();
-        }
-
         return $tupleImageGeneration->toObject();
     }
 
-    /**
-     * 格式化应签回复
-     *
-     * @param string $answer
-     * @return string
-     */
-    public function formatAnswer(string $answer): string
-    {
-        $answer = nl2br($answer);
 
-        return $answer;
-    }
 }

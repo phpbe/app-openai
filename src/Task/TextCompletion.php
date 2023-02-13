@@ -6,7 +6,7 @@ use Be\Be;
 use Be\Task\Task;
 
 /**
- * @BeTask("调用API解决问签", schedule="* * * * *")
+ * @BeTask("调用API应签", schedule="* * * * *")
  */
 class TextCompletion extends Task
 {

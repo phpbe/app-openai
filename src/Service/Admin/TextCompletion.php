@@ -21,9 +21,9 @@ class TextCompletion
         $db->startTransaction();
         try {
             foreach ($textCompletionIds as $textCompletionId) {
-                $tupleSession = Be::getTuple('openai_text_completion');
+                $tupleTextCompletion = Be::getTuple('openai_text_completion');
                 try {
-                    $tupleSession->load($textCompletionId);
+                    $tupleTextCompletion->load($textCompletionId);
                 } catch (\Throwable $t) {
                     throw new ServiceException('会话（# ' . $textCompletionId . '）不存在！');
                 }
@@ -32,7 +32,7 @@ class TextCompletion
                     ->where('text_completion_id', $textCompletionId)
                     ->delete();
 
-                $tupleSession->delete();
+                $tupleTextCompletion->delete();
             }
 
             $db->commit();
