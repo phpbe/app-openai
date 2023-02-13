@@ -37,9 +37,12 @@ class Api
 
         $headers = ['Authorization: Bearer ' . $configApi->apiKey];
 
+        //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($url, true) . "\n", FILE_APPEND);
+        //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($data, true) . "\n", FILE_APPEND);
+        //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($headers, true) . "\n", FILE_APPEND);
+
         $responseStr = \Be\Util\Net\Curl::postJson($url, $data, $headers, [CURLOPT_TIMEOUT => 300]);
 
-        //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($data, true) . "\n", FILE_APPEND);
         //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($responseStr, true) . "\n\n\n", FILE_APPEND);
 
         $response = json_decode($responseStr, true);
@@ -88,9 +91,12 @@ class Api
 
         $headers = ['Authorization: Bearer ' . $configApi->apiKey];
 
+        //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($url, true) . "\n", FILE_APPEND);
+        //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($data, true) . "\n", FILE_APPEND);
+        //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($headers, true) . "\n", FILE_APPEND);
+
         $responseStr = \Be\Util\Net\Curl::postJson($url, $data, $headers, [CURLOPT_TIMEOUT => 300]);
 
-        //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($data, true) . "\n", FILE_APPEND);
         //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($responseStr, true) . "\n\n\n", FILE_APPEND);
 
         $response = json_decode($responseStr, true);

@@ -32,19 +32,24 @@ class TextCompletion extends Task
 
         $db = Be::getDb();
 
+        file_put_contents(Be::getRuntime()->getRootPath() . '/task.txt', print_r(0, true) . "\n");
+
         $t0 = time();
         do {
+
+
             $incomplete = 0;
             $sql = 'SELECT * FROM openai_text_completion_message WHERE is_complete = 0';
             $messages = $db->getObjects($sql);
+
             foreach ($messages as $message) {
 
                 // 交互式会话
                 if ($message->line > 1) {
                     $prompt = '';
                     $sql = 'SELECT * FROM openai_text_completion_message WHERE text_completion_id = ? ORDER BY line ASC';
-                    $messages = $db->getObjects($sql, [$message->text_completion_id]);
-                    foreach ($messages as $m) {
+                    $ms = $db->getObjects($sql, [$message->text_completion_id]);
+                    foreach ($ms as $m) {
                         $prompt .= 'Q: ' . $m->prompt . "\n\n";
                         $prompt .= 'A: ' . $m->answer . "\n\n";
                     }
@@ -95,7 +100,6 @@ class TextCompletion extends Task
             }
 
         } while ($incomplete > 0);
-
 
         // 结整超过1天的的会话
         $sql = 'SELECT * FROM openai_text_completion WHERE is_complete = 0';

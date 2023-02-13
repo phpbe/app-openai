@@ -18,7 +18,7 @@
             </div>
         </div>
 
-        <div class="be-mt-50">
+        <div class="be-mt-200">
             <div class="be-row">
                 <div class="be-col">
                     <input type="text" name="prompt" class="be-input" id="text-completion-prompt" placeholder="请输入提问内容，按回车发送">
