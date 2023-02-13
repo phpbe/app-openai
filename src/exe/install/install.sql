@@ -33,7 +33,7 @@ ADD KEY `text_completion_id` (`text_completion_id`);
 CREATE TABLE `openai_image_generation` (
   `id` varchar(36) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'uuid()' COMMENT 'UUID',
   `prompt` varchar(600) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '提问',
-  `options` text COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '提问',
+  `options` text COLLATE utf8mb4_general_ci NOT NULL COMMENT '提问',
   `url` varchar(600) COLLATE utf8mb4_general_ci NOT NULL COMMENT '参数',
   `local_url` varchar(300) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '保存到本地的网址',
   `times` tinyint(4) NOT NULL DEFAULT '0' COMMENT '失败重试次数',
