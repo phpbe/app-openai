@@ -92,10 +92,6 @@ class Template extends Section
             }
             echo '</div>';
             echo '</div>';
-            echo '<div class="be-col-auto">';
-            echo '<div class="be-pl-50">';
-            echo '</div>';
-            echo '</div>';
             echo '</div>';
             echo '</div>';
         }

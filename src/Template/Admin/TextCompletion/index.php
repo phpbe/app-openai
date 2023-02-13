@@ -11,31 +11,30 @@
 
 
 <be-page-content>
-    <div class="be-bc-fff be-p-200">
-        <?php
-        echo '<div class="text-completion-messages" id="text-completion-messages">';
-        echo '<div class="be-mt-50 be-mb-200">';
-        echo '您好，我是来自 OpenAI 实验室的人工智能 ChatGPT。';
-        echo '</div>';
-        echo '</div>';
+    <div class="be-bc-fff be-p-150">
+        <div class="text-completion-messages" id="text-completion-messages">
+            <div class="be-fs-110">
+                您好，我是来自 OpenAI 实验室的人工智能 ChatGPT。
+            </div>
+        </div>
 
-        echo '<div class="be-mt-50">';
-        echo '<div class="be-row">';
-        echo '<div class="be-col">';
-        echo '<input type="text" name="prompt" class="be-input" id="text-completion-prompt" placeholder="请输入提问内容，按回车发送">';
-        echo '</div>';
-        echo '<div class="be-col-auto">';
-        echo '<div class="be-pl-50">';
-        echo '<button type="submit" class="be-btn be-btn-major be-lh-175" id="text-completion-submit"><i class="bi-send"></i> 发送</button>';
-        echo '</div>';
-        echo '</div>';
-        echo '<div class="be-col-auto">';
-        echo '<div class="be-pl-50">';
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
-        ?>
+        <div class="be-mt-50">
+            <div class="be-row">
+                <div class="be-col">
+                    <input type="text" name="prompt" class="be-input" id="text-completion-prompt" placeholder="请输入提问内容，按回车发送">
+                </div>
+                <div class="be-col-auto">
+                    <div class="be-pl-50">
+                        <button type="submit" class="be-btn be-btn-major be-lh-175" id="text-completion-submit"><i class="bi-send"></i> 发送</button>
+                    </div>
+                </div>
+                <div class="be-col-auto">
+                    <div class="be-pl-50">
+                        <button type="button" class="be-btn be-btn-major" id="text-completion-new"><i class="bi-plus"></i> 发起新会话</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>

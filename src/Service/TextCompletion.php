@@ -144,6 +144,7 @@ class TextCompletion
             if ($isNew) {
                 $tupleTextCompletion->prompt = $prompt;
                 $tupleTextCompletion->lines = 1;
+                $tupleTextCompletion->is_complete = 0;
                 $tupleTextCompletion->create_time = $now;
                 $tupleTextCompletion->insert();
             } else {

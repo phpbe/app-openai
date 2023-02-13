@@ -1,6 +1,6 @@
 <?php
 
-namespace Be\App\Openai\Service;
+namespace Be\App\Openai\Service\Admin;
 
 use Be\App\ServiceException;
 use Be\Be;

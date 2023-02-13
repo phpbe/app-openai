@@ -299,7 +299,7 @@ class TextCompletion extends Auth
             }
 
             if (count($textCompletionIds) > 0) {
-                Be::getService('App.Cms.Admin.Text')->delete($textCompletionIds);
+                Be::getService('App.Openai.Admin.TextCompletion')->delete($textCompletionIds);
             }
 
             $response->set('success', true);
