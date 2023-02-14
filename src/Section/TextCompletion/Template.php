@@ -36,11 +36,7 @@ class Template extends Section
         echo $this->config->title;
         echo '</div>';
         echo '<div class="be-col-auto">';
-        if ($textCompletion === false) {
-            echo '<button type="submit" class="be-btn be-btn-major" id="text-completion-new"><i class="bi-plus"></i> 发起新会话</button>';
-        } else {
-            echo '<a href="' . beUrl('Openai.TextCompletion.index') . '" class="be-btn be-btn-major"><i class="bi-plus"></i> 发起新会话</a>';
-        }
+        echo '<a href="' . beUrl('Openai.TextCompletion.index') . '" class="be-btn be-btn-major"><i class="bi-plus"></i> 发起新会话</a>';
         echo '</div>';
         echo '</div>';
         echo $this->page->tag1('be-section-title');
@@ -49,9 +45,12 @@ class Template extends Section
         echo $this->page->tag0('be-section-content');
 
         echo '<div class="text-completion-messages" id="text-completion-messages">';
+        echo '<div class="be-mt-50">';
+        echo '您好，我是来自 OpenAI 实验室的人工智能 ChatGPT。';
+        echo '</div>';
         if ($textCompletion !== false) {
             foreach ($textCompletion->messages as $message) {
-                echo '<div class="be-row">';
+                echo '<div class="be-row be-mt-200">';
                 echo '<div class="be-col-auto">';
                 echo '<span class="be-c-major be-fw-bold">问：</span>';
                 echo '</div>';
@@ -61,24 +60,20 @@ class Template extends Section
                 echo '</div>';
                 echo '</div>';
 
-                echo '<div class="be-row be-mt-50 be-mb-200">';
+                echo '<div class="be-row be-mt-50">';
                 echo '<div class="be-col-auto">';
-                echo '<span class="be-fw-bold">签：</span>';
+                echo '<span class="be-fw-bold">答：</span>';
                 echo '</div>';
                 echo '<div class="be-col text-completion-message-answer">';
                 echo $message->answer;
                 echo '</div>';
                 echo '</div>';
             }
-        } else {
-            echo '<div class="be-mt-50 be-mb-200">';
-            echo '您好，我是来自 OpenAI 实验室的人工智能 ChatGPT。';
-            echo '</div>';
         }
         echo '</div>';
 
         if ($textCompletion === false) {
-            echo '<div class="be-mt-50">';
+            echo '<div class="be-mt-200">';
             echo '<div class="be-row">';
             echo '<div class="be-col">';
             echo '<input type="text" name="prompt" class="be-input" id="text-completion-prompt" placeholder="请输入提问内容，按回车发送">';
@@ -145,7 +140,6 @@ class Template extends Section
             let $messages = $("#text-completion-messages");
             let $prompt = $("#text-completion-prompt");
             let $submit = $("#text-completion-submit");
-            let $newCompletion = $("#text-completion-new");
 
             $prompt.change(check).keydown(function (event) {
                 check();
@@ -189,7 +183,7 @@ class Template extends Section
 
                             html += '<div class="be-row be-mt-50 be-mb-200">';
                             html += '<div class="be-col-auto">';
-                            html += '<span class="be-fw-bold">签：</span>';
+                            html += '<span class="be-fw-bold">答：</span>';
                             html += '</div>';
                             html += '<div class="be-col text-completion-message-answer" id="text-completion-message-answer-' + json.textCompletion.latestMessage.id + '">';
                             html += '处理中.';
@@ -234,26 +228,6 @@ class Template extends Section
                 });
             });
 
-            $newCompletion.click(function () {
-                $.ajax({
-                    url: "<?php echo beUrl('Openai.TextCompletion.close'); ?>",
-                    data: {
-                        text_completion_id: textCompletionId,
-                    },
-                    method: "POST",
-                    success: function (json) {
-                        if (json.success) {
-                            window.location.href = "<?php echo beUrl('Openai.TextCompletion.index'); ?>";
-                        } else {
-                            alert(json.message);
-                        }
-                    },
-                    error: function () {
-                        alert("System Error!");
-                    }
-                });
-            });
-
             function check() {
                 if (!handling) {
                     if ($.trim($prompt.val()) === "") {
@@ -261,12 +235,6 @@ class Template extends Section
                     } else {
                         $submit.prop('disabled', false);
                     }
-                }
-
-                if (textCompletionId === "") {
-                    $newCompletion.prop('disabled', true);
-                } else {
-                    $newCompletion.prop('disabled', false);
                 }
             }
 

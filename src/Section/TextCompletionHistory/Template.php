@@ -27,7 +27,6 @@ class Template extends Section
         echo $this->page->tag0('be-section-content');
         $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
         $result = $serviceTextCompletion->getHistory([
-            'is_complete' => 1,
             'pageSize' => $this->config->quantity
         ]);
 

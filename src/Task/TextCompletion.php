@@ -98,19 +98,6 @@ class TextCompletion extends Task
 
         } while ($incomplete > 0);
 
-        // 结整超过1天的的会话
-        $sql = 'SELECT * FROM openai_text_completion WHERE is_complete = 0';
-        $textCompletions = $db->getObjects($sql);
-        foreach ($textCompletions as $textCompletion) {
-            if (strlen($textCompletion->update_time) - time() > 3600) {
-                $obj = new \stdClass();
-                $obj->id = $textCompletion->text_completion_id;
-                $obj->is_complete = 1;
-                $obj->update_time = date('Y-m-d H:i:s');
-                $db->update('openai_text_completion', $obj);
-            }
-        }
-
     }
 
 

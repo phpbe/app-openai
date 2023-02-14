@@ -16,9 +16,6 @@ class TextCompletion
     public function getHistory(array $params = []): array
     {
         $tableTextCompletion = Be::getTable('openai_text_completion');
-        if (isset($params['is_complete']) && in_array($params['is_complete'], [0, 1])) {
-            $tableTextCompletion->where('is_complete', $params['is_complete']);
-        }
 
         $total = $tableTextCompletion->count();
 
@@ -56,7 +53,6 @@ class TextCompletion
         $rows = $tableTextCompletion->getObjects();
         foreach ($rows as $textCompletion) {
             $textCompletion->lines = (int)$textCompletion->lines;
-            $textCompletion->is_complete = (int)$textCompletion->is_complete;
         }
 
         return [
@@ -123,10 +119,6 @@ class TextCompletion
                 throw new ServiceException('会话（# ' . $textCompletionId . '）不存在！');
             }
 
-            if ($tupleTextCompletion->is_complete === 1) {
-                throw new ServiceException('会话因长时间未操作，已关闭！');
-            }
-
             $tableTextCompletionMessage = Be::getTable('openai_text_completion_message');
             $tableTextCompletionMessage->where('text_completion_id', $textCompletionId)
                 ->where('is_complete', 0);
@@ -144,7 +136,6 @@ class TextCompletion
             if ($isNew) {
                 $tupleTextCompletion->prompt = $prompt;
                 $tupleTextCompletion->lines = 1;
-                $tupleTextCompletion->is_complete = 0;
                 $tupleTextCompletion->create_time = $now;
                 $tupleTextCompletion->insert();
             } else {
@@ -199,10 +190,6 @@ class TextCompletion
             throw new ServiceException('会话（# ' . $textCompletionId . '）不存在！');
         }
 
-        if ($tupleTextCompletion->is_complete === 1) {
-            throw new ServiceException('会话已关闭！');
-        }
-
         while (1) {
             $tableTextCompletionMessage = Be::getTuple('openai_text_completion_message');
             try {
@@ -231,30 +218,6 @@ class TextCompletion
         }
 
         return $textCompletionMessage;
-    }
-
-    /**
-     * 关闭
-     *
-     * @param string $textCompletionId
-     * @return object
-     */
-    public function close(string $textCompletionId): object
-    {
-        $tupleTextCompletion = Be::getTuple('openai_text_completion');
-        try {
-            $tupleTextCompletion->load($textCompletionId);
-        } catch (\Throwable $t) {
-            throw new ServiceException('会话（# ' . $textCompletionId . '）不存在！');
-        }
-
-        if ($tupleTextCompletion->is_complete != 1) {
-            $tupleTextCompletion->is_complete = 1;;
-            $tupleTextCompletion->update_time = date('Y-m-d H:i:s');
-            $tupleTextCompletion->update();
-        }
-
-        return $tupleTextCompletion->toObject();
     }
 
     /**

@@ -27,6 +27,21 @@ class TextCompletion extends Auth
         $request = Be::getRequest();
         $response = Be::getResponse();
 
+        $textCompletionId = $request->get('text_completion_id', '');
+        if ($textCompletionId === '') {
+            $textCompletionId = Be::getSession()->get('be:openai:admin:currentTextCompletionId', '');
+        }
+
+        $textCompletion = false;
+        if ($textCompletionId !== '') {
+            try {
+                $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
+                $textCompletion = $serviceTextCompletion->get($textCompletionId);
+            } catch (\Throwable $t) {
+            }
+        }
+        $response->set('textCompletion', $textCompletion);
+
         $response->set('title', '与 ChatGPT 对话');
         $response->display();
     }
@@ -38,6 +53,21 @@ class TextCompletion extends Auth
     {
         $request = Be::getRequest();
         $response = Be::getResponse();
+
+        $textCompletionId = $request->get('text_completion_id', '');
+        if ($textCompletionId === '') {
+            $textCompletionId = Be::getSession()->get('be:openai:admin:currentTextCompletionId', '');
+        }
+
+        $textCompletion = false;
+        if ($textCompletionId !== '') {
+            try {
+                $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
+                $textCompletion = $serviceTextCompletion->get($textCompletionId);
+            } catch (\Throwable $t) {
+            }
+        }
+        $response->set('textCompletion', $textCompletion);
 
         $response->set('title', '与 ChatGPT 对话');
         $response->display(null, 'Blank');
@@ -58,6 +88,9 @@ class TextCompletion extends Auth
             $textCompletionId = $request->post('text_completion_id', '');
             $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
             $textCompletion = $serviceTextCompletion->send($prompt, $textCompletionId);
+
+            $session = Be::getSession();
+            $session->set('be:openai:admin:currentTextCompletionId', $textCompletion->id);
 
             $response->set('success', true);
             $response->set('message', '提交成功！');
@@ -143,15 +176,6 @@ class TextCompletion extends Auth
                             'name' => 'prompt',
                             'label' => '提问',
                         ],
-                        [
-                            'name' => 'is_complete',
-                            'label' => '是否关闭',
-                            'driver' => FormItemSelect::class,
-                            'keyValues' => [
-                                '1' => '关闭',
-                                '0' => '未关闭',
-                            ]
-                        ],
                     ],
                 ],
 
@@ -209,12 +233,6 @@ class TextCompletion extends Auth
                             'width' => '90',
                         ],
                         [
-                            'name' => 'is_complete',
-                            'label' => '是否关闭',
-                            'driver' => TableItemToggleIcon::class,
-                            'width' => '120',
-                        ],
-                        [
                             'name' => 'create_time',
                             'label' => '创建时间',
                             'width' => '180',
@@ -264,7 +282,7 @@ class TextCompletion extends Auth
                 $response->set('textCompletion', $textCompletion);
 
                 $response->set('title', $textCompletion->prompt);
-                $response->display(null, 'Blank');
+                $response->display('App.Openai.Admin.TextCompletion.index', 'Blank');
             }
         }
     }

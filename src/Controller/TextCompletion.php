@@ -108,37 +108,6 @@ class TextCompletion extends Base
     }
 
     /**
-     * 提问
-     *
-     * @BeRoute("/openai/chatgpt/close")
-     */
-    public function close()
-    {
-        $request = Be::getRequest();
-        $response = Be::getResponse();
-
-        try {
-            $config = Be::getConfig('App.Openai.Auth');
-            if ($config->enable === 1 && $config->scope === 'api') {
-                $this->auth();
-            }
-
-            $textCompletionId = $request->post('text_completion_id', '');
-
-            $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
-            $serviceTextCompletion->close($textCompletionId);
-
-            $response->set('success', true);
-            $response->set('message', '关闭会话成功！');
-            $response->json();
-        } catch (\Throwable $t) {
-            $response->set('success', false);
-            $response->set('message', $t->getMessage());
-            $response->json();
-        }
-    }
-
-    /**
      * ChatGPT 历史会话
      *
      * @BeMenu("ChatGPT 提问应签历史记录")

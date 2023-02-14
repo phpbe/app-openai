@@ -1,7 +1,7 @@
 <be-head>
     <style type="text/css">
        .text-completion-messages {
-            min-height: 300px;
+            height: calc(100vh - 120px);
         }
         .text-completion-message-answer p {
             margin: 0;
@@ -14,8 +14,32 @@
     <div class="be-bc-fff be-p-150">
         <div class="text-completion-messages" id="text-completion-messages">
             <div class="be-fs-110">
-                您好，我是来自 OpenAI 实验室的人工智能 ChatGPT。
+                向 ChatGPT 提问，回复内容可插入到编辑器中。
             </div>
+            <?php
+            if ($this->textCompletion !== false) {
+                foreach ($this->textCompletion->messages as $message) {
+                    echo '<div class="be-row be-mt-200">';
+                    echo '<div class="be-col-auto">';
+                    echo '<span class="be-c-major be-fw-bold">问：</span>';
+                    echo '</div>';
+                    echo '<div class="be-col be-c-major">';
+                    echo $message->prompt;
+                    echo '<span class="be-c-major-6">（' . $message->create_time . '）</span>';
+                    echo '</div>';
+                    echo '</div>';
+
+                    echo '<div class="be-row be-mt-50">';
+                    echo '<div class="be-col-auto">';
+                    echo '<span class="be-fw-bold">答：</span>';
+                    echo '</div>';
+                    echo '<div class="be-col text-completion-message-answer">';
+                    echo $message->answer;
+                    echo '</div>';
+                    echo '</div>';
+                }
+            }
+            ?>
         </div>
 
         <div class="be-mt-200">
@@ -25,7 +49,7 @@
                 </div>
                 <div class="be-col-auto">
                     <div class="be-pl-50">
-                        <button type="submit" class="be-btn be-btn-major be-lh-175" id="text-completion-submit"><i class="bi-send"></i> 发送</button>
+                        <button type="submit" class="be-btn be-btn-major" id="text-completion-submit"><i class="bi-send"></i> 发送</button>
                     </div>
                 </div>
                 <div class="be-col-auto">
@@ -38,7 +62,7 @@
     </div>
 
     <script>
-        let textCompletionId = "";
+        let textCompletionId = "<?php echo $this->textCompletion ? $this->textCompletion->id : ''; ?>";
         let textCompletionMessageId = "";
 
         let handling = false;
@@ -94,7 +118,7 @@
 
                         html += '<div class="be-row be-mt-50">';
                         html += '<div class="be-col-auto">';
-                        html += '<span class="be-fw-bold">签：</span>';
+                        html += '<span class="be-fw-bold">答：</span>';
                         html += '</div>';
                         html += '<div class="be-col text-completion-message-answer" id="text-completion-message-answer-' + json.textCompletion.latestMessage.id + '">';
                         html += '处理中.';
