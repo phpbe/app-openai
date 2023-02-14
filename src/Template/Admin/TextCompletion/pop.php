@@ -107,7 +107,7 @@
                     选择:
                     <a class="be-link-major be-ml-50" href="javascript:void(0);" id="text-completion-toggle-all">全部</a>
                     <a class="be-link-major be-ml-50" href="javascript:void(0);" id="text-completion-toggle-q">问</a>
-                    <a class="be-link-majorl be-ml-50" href="javascript:void(0);" id="text-completion-toggle-a">签</a>
+                    <a class="be-link-major be-ml-50" href="javascript:void(0);" id="text-completion-toggle-a">答</a>
                 </div>
 
                 <div class="be-mt-200">
