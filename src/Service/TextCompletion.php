@@ -107,6 +107,10 @@ class TextCompletion
             throw new ServiceException('提问内容不可为空！');
         }
 
+        if (mb_strlen($prompt) > 500) {
+            throw new ServiceException('提问内容最多500个字！');
+        }
+
         $db = Be::getDb();
 
         $isNew = ($textCompletionId === '');
