@@ -178,9 +178,9 @@ class ImageGeneration extends Auth
                         ],
                         [
                             'name' => 'url',
-                            'label' => '生成图像',
+                            'label' => '生成的图像',
                             'driver' => TableItemImage::class,
-                            'width' => '60',
+                            'width' => '160',
                             'action' => 'view',
                             'target' => 'blank',
                         ],
