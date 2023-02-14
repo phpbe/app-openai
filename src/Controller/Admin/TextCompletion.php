@@ -89,6 +89,8 @@ class TextCompletion extends Auth
 
         // JS 回调代码，base64编码
         $callback = $request->get('callback', '');
+        $response->set('callback', $callback);
+
         $callbackCode = '';
         if ($callback) {
             $callbackCode = base64_decode($callback);
