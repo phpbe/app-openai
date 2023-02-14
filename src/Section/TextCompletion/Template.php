@@ -22,7 +22,7 @@ class Template extends Section
         $textCompletionId = \Be\Be::getRequest()->get('text_completion_id', '');
         if ($textCompletionId !== '') {
             $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
-            $textCompletion = $serviceTextCompletion->getCompletion($textCompletionId);
+            $textCompletion = $serviceTextCompletion->get($textCompletionId);
         }
 
         echo '<div class="text-completion">';
