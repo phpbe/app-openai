@@ -54,7 +54,7 @@
                 </div>
                 <div class="be-col-auto">
                     <div class="be-pl-50">
-                        <button type="button" class="be-btn be-btn-green" id="text-completion-new"><i class="bi-plus"></i> 发起新会话</button>
+                        <a href="<?php echo beAdminUrl('Openai.TextCompletion.index', ['text_completion_id' => 'new']); ?>" class="be-btn be-btn-green"><i class="bi-plus"></i> 发起新会话</a>
                     </div>
                 </div>
             </div>
@@ -74,7 +74,6 @@
         let $messages = $("#text-completion-messages");
         let $prompt = $("#text-completion-prompt");
         let $submit = $("#text-completion-submit");
-        let $newSession = $("#text-completion-new");
 
         $prompt.change(check).keydown(function (event) {
             check();
@@ -163,26 +162,6 @@
             });
         });
 
-        $newSession.click(function () {
-            $.ajax({
-                url: "<?php echo beAdminUrl('Openai.TextCompletion.close'); ?>",
-                data: {
-                    text_completion_id: textCompletionId,
-                },
-                method: "POST",
-                success: function (json) {
-                    if (json.success) {
-                        window.location.href = "<?php echo beAdminUrl('Openai.TextCompletion.index'); ?>";
-                    } else {
-                        alert(json.message);
-                    }
-                },
-                error: function () {
-                    alert("System Error!");
-                }
-            });
-        });
-
         function check() {
             if (!handling) {
                 if ($.trim($prompt.val()) === "") {
@@ -190,12 +169,6 @@
                 } else {
                     $submit.prop('disabled', false);
                 }
-            }
-
-            if (textCompletionId === "") {
-                $newSession.prop('disabled', true);
-            } else {
-                $newSession.prop('disabled', false);
             }
         }
 

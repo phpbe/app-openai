@@ -26,20 +26,26 @@ class TextCompletion extends Auth
     {
         $request = Be::getRequest();
         $response = Be::getResponse();
+        $session = Be::getSession();
 
         $textCompletionId = $request->get('text_completion_id', '');
         if ($textCompletionId === '') {
-            $textCompletionId = Be::getSession()->get('be:openai:admin:currentTextCompletionId', '');
+            $textCompletionId = $session->get('be:openai:admin:currentTextCompletionId', '');
         }
 
         $textCompletion = false;
-        if ($textCompletionId !== '') {
+        if ($textCompletionId !== '' && $textCompletionId !== 'new') {
             try {
                 $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
                 $textCompletion = $serviceTextCompletion->get($textCompletionId);
             } catch (\Throwable $t) {
             }
         }
+
+        if ($textCompletion || $textCompletionId === 'new') {
+            $session->set('be:openai:admin:currentTextCompletionId', $textCompletionId);
+        }
+
         $response->set('textCompletion', $textCompletion);
 
         $response->set('title', '与 ChatGPT 对话');
@@ -53,20 +59,26 @@ class TextCompletion extends Auth
     {
         $request = Be::getRequest();
         $response = Be::getResponse();
+        $session = Be::getSession();
 
         $textCompletionId = $request->get('text_completion_id', '');
         if ($textCompletionId === '') {
-            $textCompletionId = Be::getSession()->get('be:openai:admin:currentTextCompletionId', '');
+            $textCompletionId = $session->get('be:openai:admin:currentTextCompletionId', '');
         }
 
         $textCompletion = false;
-        if ($textCompletionId !== '') {
+        if ($textCompletionId !== '' && $textCompletionId !== 'new') {
             try {
                 $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
                 $textCompletion = $serviceTextCompletion->get($textCompletionId);
             } catch (\Throwable $t) {
             }
         }
+
+        if ($textCompletion || $textCompletionId === 'new') {
+            $session->set('be:openai:admin:currentTextCompletionId', $textCompletionId);
+        }
+
         $response->set('textCompletion', $textCompletion);
 
         $response->set('title', '与 ChatGPT 对话');
@@ -132,32 +144,6 @@ class TextCompletion extends Auth
     }
 
     /**
-     * 会话-关闭
-     *
-     * @BePermission("会话")
-     */
-    public function close()
-    {
-        $request = Be::getRequest();
-        $response = Be::getResponse();
-
-        try {
-            $textCompletionId = $request->post('text_completion_id', '');
-            $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
-            $serviceTextCompletion->close($textCompletionId);
-
-            $response->set('success', true);
-            $response->set('message', '关闭会话成功！');
-            $response->json();
-        } catch (\Throwable $t) {
-            $response->set('success', false);
-            $response->set('message', $t->getMessage());
-            $response->json();
-        }
-    }
-
-
-    /**
      * @BeMenu("会话记录", icon = "bi-list", ordering="1.2")
      * @BePermission("会话记录", ordering="1.2")
      */
@@ -183,7 +169,7 @@ class TextCompletion extends Auth
                     'items' => [
                         [
                             'label' => '新增会话',
-                            'action' => 'index',
+                            'url' => beAdminUrl('Openai.TextCompletion.index', ['text_completion_id' => 'new']),
                             'target' => 'self', // 'ajax - ajax请求 / dialog - 对话框窗口 / drawer - 抽屉 / self - 当前页面 / blank - 新页面'
                             'ui' => [
                                 'icon' => 'el-icon-plus',
@@ -221,11 +207,8 @@ class TextCompletion extends Auth
                             'label' => '提问',
                             'align' => 'left',
                             'driver' => TableItemLink::class,
-                            'action' => 'messages',
-                            'target' => 'drawer',
-                            'drawer' => [
-                                'width' => '75%',
-                            ],
+                            'action' => 'detail',
+                            'target' => 'self',
                         ],
                         [
                             'name' => 'lines',
@@ -268,7 +251,7 @@ class TextCompletion extends Auth
     /**
      * @BePermission("会话记录")
      */
-    public function messages()
+    public function detail()
     {
         $request = Be::getRequest();
         $response = Be::getResponse();
@@ -277,12 +260,7 @@ class TextCompletion extends Auth
         if ($postData) {
             $postData = json_decode($postData, true);
             if (isset($postData['row']['id']) && $postData['row']['id']) {
-                $textCompletionId = $postData['row']['id'];
-                $textCompletion = Be::getService('App.Openai.TextCompletion')->get($textCompletionId);
-                $response->set('textCompletion', $textCompletion);
-
-                $response->set('title', $textCompletion->prompt);
-                $response->display('App.Openai.Admin.TextCompletion.index', 'Blank');
+                $response->redirect(beAdminUrl('Openai.TextCompletion.index', ['text_completion_id' => $postData['row']['id']]));
             }
         }
     }
