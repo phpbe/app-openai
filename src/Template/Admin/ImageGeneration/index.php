@@ -12,7 +12,7 @@
                     </div>
 
                     <div class="be-mt-50">
-                        <textarea name="prompt" class=" be-textarea" style="width: 100%; height: 120px;" id="image-generation-prompt" placeholder="请输入您的需求，按回车发送"></textarea>
+                        <textarea name="prompt" class=" be-textarea" style="width: 100%; height: 120px;" id="image-generation-prompt" placeholder="请输入您的需求，按Ctrl+回车发送"></textarea>
                     </div>
                 </div>
 
@@ -80,7 +80,7 @@
 
         $prompt.change(check).keydown(function (event) {
             check();
-            if (event.keyCode === 13) {
+            if (event.ctrlKey && event.keyCode === 13) {
                 $submit.trigger("click");
             }
         })

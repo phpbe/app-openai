@@ -32,11 +32,8 @@ class TextCompletion extends Task
 
         $db = Be::getDb();
 
-        file_put_contents(Be::getRuntime()->getRootPath() . '/task.txt', print_r(0, true) . "\n");
-
         $t0 = time();
         do {
-
 
             $incomplete = 0;
             $sql = 'SELECT * FROM openai_text_completion_message WHERE is_complete = 0';

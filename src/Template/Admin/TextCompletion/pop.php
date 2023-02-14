@@ -21,7 +21,7 @@
         <div class="be-mt-200">
             <div class="be-row">
                 <div class="be-col">
-                    <input type="text" name="prompt" class="be-input" id="text-completion-prompt" placeholder="请输入提问内容，按回车发送">
+                    <textarea name="prompt" class="be-textarea" id="text-completion-prompt" placeholder="请输入提问内容，按Ctrl+回车发送" style="height: 90px;"></textarea>
                 </div>
                 <div class="be-col-auto">
                     <div class="be-pl-50">
@@ -54,7 +54,7 @@
 
         $prompt.change(check).keydown(function (event) {
             check();
-            if (event.keyCode === 13) {
+            if (event.ctrlKey && event.keyCode === 13) {
                 $submit.trigger("click");
             }
         })
