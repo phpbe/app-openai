@@ -30,7 +30,7 @@ class TextCompletion extends Auth
 
         $textCompletionId = $request->get('text_completion_id', '');
         if ($textCompletionId === '') {
-            $textCompletionId = $session->get('be:openai:admin:currentTextCompletionId', '');
+            $textCompletionId = $session->get('app:openai:admin:currentTextCompletionId', '');
         }
 
         $textCompletion = false;
@@ -43,7 +43,7 @@ class TextCompletion extends Auth
         }
 
         if ($textCompletion || $textCompletionId === 'new') {
-            $session->set('be:openai:admin:currentTextCompletionId', $textCompletionId);
+            $session->set('app:openai:admin:currentTextCompletionId', $textCompletionId);
         }
 
         $response->set('textCompletion', $textCompletion);
@@ -63,7 +63,7 @@ class TextCompletion extends Auth
 
         $textCompletionId = $request->get('text_completion_id', '');
         if ($textCompletionId === '') {
-            $textCompletionId = $session->get('be:openai:admin:currentTextCompletionId', '');
+            $textCompletionId = $session->get('app:openai:admin:currentTextCompletionId', '');
         }
 
         $textCompletion = false;
@@ -76,7 +76,7 @@ class TextCompletion extends Auth
         }
 
         if ($textCompletion || $textCompletionId === 'new') {
-            $session->set('be:openai:admin:currentTextCompletionId', $textCompletionId);
+            $session->set('app:openai:admin:currentTextCompletionId', $textCompletionId);
         }
 
         $response->set('textCompletion', $textCompletion);
@@ -102,7 +102,7 @@ class TextCompletion extends Auth
             $textCompletion = $serviceTextCompletion->send($prompt, $textCompletionId);
 
             $session = Be::getSession();
-            $session->set('be:openai:admin:currentTextCompletionId', $textCompletion->id);
+            $session->set('app:openai:admin:currentTextCompletionId', $textCompletion->id);
 
             $response->set('success', true);
             $response->set('message', '提交成功！');

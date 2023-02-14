@@ -18,7 +18,7 @@ class Template extends Section
         }
         $this->css();
 
-        echo '<div class="text-completion">';
+        echo '<div class="image-generation">';
         if ($this->position === 'middle' && $this->config->width === 'default') {
             echo '<div class="be-container">';
         }
@@ -100,9 +100,14 @@ class Template extends Section
     private function css()
     {
         echo '<style type="text/css">';
-        echo $this->getCssPadding('text-completion');
-        echo $this->getCssMargin('text-completion');
-        echo $this->getCssBackgroundColor('text-completion');
+        echo $this->getCssPadding('image-generation');
+        echo $this->getCssMargin('image-generation');
+        echo $this->getCssBackgroundColor('image-generation');
+
+        echo '#' . $this->id . '#image-generation-result {';
+        echo 'min-height: 300px;';
+        echo '}';
+
         echo '</style>';
     }
 
