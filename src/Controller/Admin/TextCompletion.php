@@ -12,8 +12,8 @@ use Be\Be;
 /**
  * 存储管理器
  *
- * @BeMenuGroup("文本应签", icon = "bi-chat-text", ordering="1")
- * @BePermissionGroup("文本应签")
+ * @BeMenuGroup("文本应答", icon = "bi-chat-text", ordering="1")
+ * @BePermissionGroup("文本应答")
  */
 class TextCompletion extends Auth
 {

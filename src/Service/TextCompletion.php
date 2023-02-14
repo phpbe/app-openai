@@ -236,7 +236,7 @@ class TextCompletion
     }
 
     /**
-     * 格式化应签回复
+     * 格式化应答回复
      *
      * @param string $answer
      * @return string

@@ -16,7 +16,7 @@ CREATE TABLE `openai_text_completion_message` (
   `text_completion_id` varchar(36) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '会话ID',
   `line` tinyint(4) NOT NULL DEFAULT '1' COMMENT '行号',
   `prompt` varchar(600) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '提问',
-  `answer` text COLLATE utf8mb4_general_ci NOT NULL COMMENT '回签',
+  `answer` text COLLATE utf8mb4_general_ci NOT NULL COMMENT '回答',
   `times` tinyint(4) NOT NULL DEFAULT '0' COMMENT '失败重试次数',
   `is_complete` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否完成',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

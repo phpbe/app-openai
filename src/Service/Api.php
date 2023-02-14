@@ -9,7 +9,7 @@ class Api
 {
 
     /**
-     * 文本应签
+     * 文本应答
      */
     public function textCompletion(string $prompt, array $options = [])
     {
@@ -47,11 +47,11 @@ class Api
 
         $response = json_decode($responseStr, true);
         if (!$response || !is_array($response)) {
-            throw new ServiceException('调用 OpenAi 文本应签（/v1/completions）接口未返回有效JSON数据');
+            throw new ServiceException('调用 OpenAi 文本应答（/v1/completions）接口未返回有效JSON数据');
         }
 
         if (isset($response['error'])) {
-            $message = '调用 OpenAi 文本应签（/v1/completions）接口出错';
+            $message = '调用 OpenAi 文本应答（/v1/completions）接口出错';
             if (isset($response['error']['message'])) {
                 $message .= '：' . $response['error']['message'];
             } else {
@@ -61,7 +61,7 @@ class Api
         }
 
         if (!isset($response['choices'][0]['text'])) {
-            throw new ServiceException('调用 OpenAi 文本应签（/v1/completions）接口无返回有效数据');
+            throw new ServiceException('调用 OpenAi 文本应答（/v1/completions）接口无返回有效数据');
         }
 
         $answer = $response['choices'][0]['text'];

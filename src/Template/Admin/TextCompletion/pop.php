@@ -358,7 +358,7 @@
             callback();
         });
 
-        // 切换选中签案
+        // 切换选中答案
         $("#text-completion-toggle-a").click(function () {
             let isAllChecked = true;
             $(".text-completion-messages .be-checkbox[name='text_completion_message_answer']").each(function () {
