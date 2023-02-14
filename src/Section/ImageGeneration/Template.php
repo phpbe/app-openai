@@ -104,8 +104,8 @@ class Template extends Section
         echo $this->getCssMargin('image-generation');
         echo $this->getCssBackgroundColor('image-generation');
 
-        echo '#' . $this->id . '#image-generation-result {';
-        echo 'min-height: 300px;';
+        echo '#' . $this->id . ' #image-generation-result {';
+        echo 'min-height: 60vh;';
         echo '}';
 
         echo '</style>';
