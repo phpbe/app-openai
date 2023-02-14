@@ -87,6 +87,13 @@ class TextCompletion extends Auth
         ]);
         $response->set('textCompletionHistory', $result);
 
+        // JS 回调代码，base64编码
+        $callback = $request->get('callback', '');
+        if ($callback) {
+            $callback = base64_decode($callback);
+        }
+        $response->set('callback', $callback);
+
         $response->set('title', '与 ChatGPT 对话');
         $response->display(null, 'Blank');
     }

@@ -132,7 +132,7 @@
     </div>
 
     <script>
-        let textCompletion = <?php echo $this->textCompletion ? json_encode($this->textCompletion) : false; ?>;
+        let textCompletion = <?php echo $this->textCompletion ? json_encode($this->textCompletion) : 'false'; ?>;
 
         let textCompletionId = "<?php echo $this->textCompletion ? $this->textCompletion->id : ''; ?>";
         let textCompletionMessageId = "";
@@ -305,14 +305,14 @@
 
             let promptIds = [];
             $(".text-completion-messages .be-checkbox[name='text_completion_message_prompt']").each(function () {
-                if (!$(this).prop("checked")) {
+                if ($(this).prop("checked")) {
                     promptIds.push($(this).val());
                 }
             });
 
             let answerIds = [];
             $(".text-completion-messages .be-checkbox[name='text_completion_message_answer']").each(function () {
-                if (!$(this).prop("checked")) {
+                if ($(this).prop("checked")) {
                     answerIds.push($(this).val());
                 }
             });
@@ -321,8 +321,6 @@
                 messasge.prompt_selected = promptIds.indexOf(messasge.id) === -1 ? 0 : 1;
                 messasge.answer_selected = answerIds.indexOf(messasge.id) === -1 ? 0 : 1;
             }
-
-            console.log(textCompletion);
 
             <?php echo $this->callback; ?>
         }

@@ -79,10 +79,10 @@ class TextCompletion
 
         $textCompletion = $tupleTextCompletion->toObject();
 
-        $tableTextCompletionMessage = Be::getTable('openai_text_completion_message');
-        $tableTextCompletionMessage->where('text_completion_id', $textCompletion->id)->orderBy('line ASC');
-
-        $messages = $tableTextCompletionMessage->getObjects();
+        $messages = Be::getTable('openai_text_completion_message')
+            ->where('text_completion_id', $textCompletion->id)
+            ->orderBy('line ASC')
+            ->getObjects();
         foreach ($messages as $message) {
             $message->line = (int)$message->line;
             $message->is_complete = (int)$message->is_complete;
@@ -123,10 +123,10 @@ class TextCompletion
                 throw new ServiceException('会话（# ' . $textCompletionId . '）不存在！');
             }
 
-            $tableTextCompletionMessage = Be::getTable('openai_text_completion_message');
-            $tableTextCompletionMessage->where('text_completion_id', $textCompletionId)
-                ->where('is_complete', 0);
-            if ($tableTextCompletionMessage->count() > 0) {
+            if (Be::getTable('openai_text_completion_message')
+                    ->where('text_completion_id', $textCompletionId)
+                    ->where('is_complete', 0)
+                    ->count() > 0) {
                 throw new ServiceException('会话正在处理中，请勿频繁提交！');
             }
         }
@@ -171,6 +171,17 @@ class TextCompletion
 
         $textCompletion = $tupleTextCompletion->toObject();
         $textCompletion->latestMessage = $tupleTextCompletionMessage->toObject();
+
+        $messages = Be::getTable('openai_text_completion_message')
+            ->where('text_completion_id', $textCompletion->id)
+            ->orderBy('line ASC')
+            ->getObjects();
+        foreach ($messages as $message) {
+            $message->line = (int)$message->line;
+            $message->is_complete = (int)$message->is_complete;
+            $message->answer = $this->formatAnswer($message->answer);
+        }
+        $textCompletion->messages = $messages;
 
         return $textCompletion;
     }
