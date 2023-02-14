@@ -76,7 +76,7 @@
                             echo '<span class="be-c-major be-fw-bold">问：</span>';
                             echo '</div>';
                             echo '<div class="be-col be-lh-200">';
-                            echo '<span class="be-c-major">（' . $message->prompt . '）</span>';
+                            echo '<span class="be-c-major">' . $message->prompt . '</span>';
                             echo '<span class="be-c-major-6">（' . $message->create_time . '）</span>';
                             echo '</div>';
                             echo '<div class="be-col-auto">';
@@ -187,7 +187,7 @@
                         html += '<span class="be-c-major be-fw-bold">问：</span>';
                         html += '</div>';
                         html += '<div class="be-col be-lh-200">';
-                        html += '<span class="be-c-major">（' + json.textCompletion.latestMessage.prompt + '）</span>';
+                        html += '<span class="be-c-major">' + json.textCompletion.latestMessage.prompt + '</span>';
                         html += '<span class="be-c-major-6">（' + json.textCompletion.latestMessage.create_time + '）</span>';
                         html += '</div>';
                         html +=  '<div class="be-col-auto">';
