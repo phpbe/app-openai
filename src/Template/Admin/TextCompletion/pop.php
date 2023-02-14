@@ -45,7 +45,8 @@
                         <?php
                         foreach ($this->textCompletionHistory['rows'] as $textCompletion) {
                             echo '<div class="be-mt-50">';
-                            echo '<a class="be-d-block be-t-ellipsis-2" href="' . beAdminUrl('Openai.TextCompletion.pop', ['text_completion_id' => $textCompletion->id]) . '" title="' . $textCompletion->name . '">';
+                            $url = beAdminUrl('Openai.TextCompletion.pop', ['text_completion_id' => $textCompletion->id, 'callback' => $this->callback]);
+                            echo '<a class="be-d-block be-t-ellipsis-2" href="' . $url . '" title="' . $textCompletion->name . '">';
                             echo $textCompletion->prompt;
                             echo '</a>';
                             echo '</div>';
@@ -322,7 +323,7 @@
                 messasge.answer_selected = answerIds.indexOf(messasge.id) === -1 ? 0 : 1;
             }
 
-            <?php echo $this->callback; ?>
+            <?php echo $this->callbackCode; ?>
         }
 
 

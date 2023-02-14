@@ -89,10 +89,11 @@ class TextCompletion extends Auth
 
         // JS 回调代码，base64编码
         $callback = $request->get('callback', '');
+        $callbackCode = '';
         if ($callback) {
-            $callback = base64_decode($callback);
+            $callbackCode = base64_decode($callback);
         }
-        $response->set('callback', $callback);
+        $response->set('callbackCode', $callbackCode);
 
         $response->set('title', '与 ChatGPT 对话');
         $response->display(null, 'Blank');
