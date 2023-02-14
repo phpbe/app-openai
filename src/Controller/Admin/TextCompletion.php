@@ -81,6 +81,12 @@ class TextCompletion extends Auth
 
         $response->set('textCompletion', $textCompletion);
 
+        $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
+        $result = $serviceTextCompletion->getHistory([
+            'pageSize' => 30
+        ]);
+        $response->set('textCompletionHistory', $result);
+
         $response->set('title', '与 ChatGPT 对话');
         $response->display(null, 'Blank');
     }
