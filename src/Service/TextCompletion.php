@@ -151,7 +151,7 @@ class TextCompletion
             $tupleTextCompletionMessage->text_completion_id = $tupleTextCompletion->id;
             $tupleTextCompletionMessage->line = $tupleTextCompletion->lines;
             $tupleTextCompletionMessage->prompt = $prompt;
-            $tupleTextCompletionMessage->answer = '';
+            $tupleTextCompletionMessage->answer = '处理中.';
             $tupleTextCompletionMessage->times = 0;
             $tupleTextCompletionMessage->is_complete = 0;
             $tupleTextCompletionMessage->create_time = $now;
