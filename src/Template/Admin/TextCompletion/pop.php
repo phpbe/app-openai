@@ -39,7 +39,7 @@
                 <div class="be-col-24 be-md-col-auto">
                     <div class="text-completion-history">
                         <div class="be-fs-110">
-                            最年会话：
+                            最近会话：
                         </div>
 
                         <?php
