@@ -122,7 +122,10 @@
                         </div>
                         <div class="be-col-auto">
                             <div class="be-pl-50">
-                                <a href="<?php echo beAdminUrl('Openai.TextCompletion.pop', ['text_completion_id' => 'new']); ?>" class="be-btn be-btn-green"><i class="bi-plus"></i> 发起新会话</a>
+                                <?php
+                                $url = beAdminUrl('Openai.TextCompletion.pop', ['text_completion_id' => 'new', 'callback' => $this->callback]);
+                                ?>
+                                <a href="<?php echo $url; ?>" class="be-btn be-btn-green"><i class="bi-plus"></i> 发起新会话</a>
                             </div>
                         </div>
                     </div>
