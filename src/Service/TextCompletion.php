@@ -86,6 +86,7 @@ class TextCompletion
         foreach ($messages as $message) {
             $message->line = (int)$message->line;
             $message->is_complete = (int)$message->is_complete;
+            $message->prompt = nl2br($message->prompt);
             $message->answer = $this->formatAnswer($message->answer);
         }
         $textCompletion->messages = $messages;
@@ -171,6 +172,7 @@ class TextCompletion
 
         $textCompletion = $tupleTextCompletion->toObject();
         $textCompletion->latestMessage = $tupleTextCompletionMessage->toObject();
+        $textCompletion->latestMessage->prompt = nl2br($textCompletion->latestMessage->prompt);
 
         $messages = Be::getTable('openai_text_completion_message')
             ->where('text_completion_id', $textCompletion->id)
@@ -179,6 +181,7 @@ class TextCompletion
         foreach ($messages as $message) {
             $message->line = (int)$message->line;
             $message->is_complete = (int)$message->is_complete;
+            $message->prompt = nl2br($message->prompt);
             $message->answer = $this->formatAnswer($message->answer);
         }
         $textCompletion->messages = $messages;
@@ -214,6 +217,8 @@ class TextCompletion
             }
 
             $textCompletionMessage = $tableTextCompletionMessage->toObject();
+
+            $textCompletionMessage->prompt = nl2br($textCompletionMessage->prompt);
             $textCompletionMessage->answer = $this->formatAnswer($textCompletionMessage->answer);
 
             if ($textCompletionMessage->is_complete === 1) {
