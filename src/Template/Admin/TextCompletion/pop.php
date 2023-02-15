@@ -123,7 +123,7 @@
                         <div class="be-col-auto">
                             <div class="be-pl-50">
                                 <?php
-                                $url = beAdminUrl('Openai.TextCompletion.pop', ['text_completion_id' => 'new', 'callback' => $this->callback]);
+                                $url = beAdminUrl('Openai.TextCompletion.pop', ['callback' => $this->callback]);
                                 ?>
                                 <a href="<?php echo $url; ?>" class="be-btn be-btn-green"><i class="bi-plus"></i> 发起新会话</a>
                             </div>
@@ -156,7 +156,7 @@
             if (event.ctrlKey && event.keyCode === 13) {
                 $submit.trigger("click");
             }
-        })
+        });
 
         $submit.click(function () {
 
@@ -299,6 +299,10 @@
             });
         }
 
+        window.addEventListener('message', function (event) {
+            $prompt.val(event.data);
+            check();
+        });
 
         // 回调
         function callback() {

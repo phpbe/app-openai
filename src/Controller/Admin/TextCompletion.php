@@ -26,24 +26,16 @@ class TextCompletion extends Auth
     {
         $request = Be::getRequest();
         $response = Be::getResponse();
-        $session = Be::getSession();
 
         $textCompletionId = $request->get('text_completion_id', '');
-        if ($textCompletionId === '') {
-            $textCompletionId = $session->get('app:openai:admin:currentTextCompletionId', '');
-        }
 
         $textCompletion = false;
-        if ($textCompletionId !== '' && $textCompletionId !== 'new') {
+        if ($textCompletionId !== '') {
             try {
                 $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
                 $textCompletion = $serviceTextCompletion->get($textCompletionId);
             } catch (\Throwable $t) {
             }
-        }
-
-        if ($textCompletion || $textCompletionId === 'new') {
-            $session->set('app:openai:admin:currentTextCompletionId', $textCompletionId);
         }
 
         $response->set('textCompletion', $textCompletion);
@@ -59,24 +51,16 @@ class TextCompletion extends Auth
     {
         $request = Be::getRequest();
         $response = Be::getResponse();
-        $session = Be::getSession();
 
         $textCompletionId = $request->get('text_completion_id', '');
-        if ($textCompletionId === '') {
-            $textCompletionId = $session->get('app:openai:admin:currentTextCompletionId', '');
-        }
 
         $textCompletion = false;
-        if ($textCompletionId !== '' && $textCompletionId !== 'new') {
+        if ($textCompletionId !== '') {
             try {
                 $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
                 $textCompletion = $serviceTextCompletion->get($textCompletionId);
             } catch (\Throwable $t) {
             }
-        }
-
-        if ($textCompletion || $textCompletionId === 'new') {
-            $session->set('app:openai:admin:currentTextCompletionId', $textCompletionId);
         }
 
         $response->set('textCompletion', $textCompletion);
@@ -185,7 +169,7 @@ class TextCompletion extends Auth
                     'items' => [
                         [
                             'label' => '新增会话',
-                            'url' => beAdminUrl('Openai.TextCompletion.index', ['text_completion_id' => 'new']),
+                            'url' => beAdminUrl('Openai.TextCompletion.index'),
                             'target' => 'self', // 'ajax - ajax请求 / dialog - 对话框窗口 / drawer - 抽屉 / self - 当前页面 / blank - 新页面'
                             'ui' => [
                                 'icon' => 'el-icon-plus',

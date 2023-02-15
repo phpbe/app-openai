@@ -54,7 +54,7 @@
                 </div>
                 <div class="be-col-auto">
                     <div class="be-pl-50">
-                        <a href="<?php echo beAdminUrl('Openai.TextCompletion.index', ['text_completion_id' => 'new']); ?>" class="be-btn be-btn-green"><i class="bi-plus"></i> 发起新会话</a>
+                        <a href="<?php echo beAdminUrl('Openai.TextCompletion.index'); ?>" class="be-btn be-btn-green"><i class="bi-plus"></i> 发起新会话</a>
                     </div>
                 </div>
             </div>
