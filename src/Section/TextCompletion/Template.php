@@ -171,7 +171,7 @@ class Template extends Section
                             textCompletionMessageId = json.textCompletion.latestMessage.id;
 
                             let html = "";
-                            html += '<div class="be-row">';
+                            html += '<div class="be-row be-mt-200">';
                             html += '<div class="be-col-auto">';
                             html += '<span class="be-c-major be-fw-bold">问：</span>';
                             html += '</div>';
@@ -181,7 +181,7 @@ class Template extends Section
                             html += '</div>';
                             html += '</div>';
 
-                            html += '<div class="be-row be-mt-50 be-mb-200">';
+                            html += '<div class="be-row be-mt-50">';
                             html += '<div class="be-col-auto">';
                             html += '<span class="be-fw-bold">答：</span>';
                             html += '</div>';

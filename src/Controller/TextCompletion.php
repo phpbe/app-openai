@@ -62,9 +62,11 @@ class TextCompletion extends Base
             $textCompletionId = $request->post('text_completion_id', '');
             $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
 
-            $textCompletion = $serviceTextCompletion->get($textCompletionId);
-            if ($textCompletion->lines >= 5) {
-                throw new ControllerException('一次会话中，最多允许5个回合的应答，请发起新会话。');
+            if ($textCompletionId !== '') {
+                $textCompletion = $serviceTextCompletion->get($textCompletionId);
+                if ($textCompletion->lines >= 5) {
+                    throw new ControllerException('一次会话中，最多允许5个回合的应答，请发起新会话。');
+                }
             }
 
             $textCompletion = $serviceTextCompletion->send($prompt, $textCompletionId);
