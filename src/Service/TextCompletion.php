@@ -108,7 +108,7 @@ class TextCompletion
             throw new ServiceException('提问内容不可为空！');
         }
 
-        if (mb_strlen($prompt) > 500) {
+        if (mb_strlen($prompt) > 1000) {
             throw new ServiceException('提问内容最多500个字！');
         }
 
