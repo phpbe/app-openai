@@ -76,7 +76,7 @@ class Template extends Section
             echo '<div class="be-mt-200">';
             echo '<div class="be-row">';
             echo '<div class="be-col">';
-            echo '<input type="text" name="prompt" class="be-input" id="text-completion-prompt" placeholder="请输入提问内容，按回车发送">';
+            echo '<input type="text" name="prompt" class="be-input" id="text-completion-prompt" placeholder="请输入提问内容，按Ctrl+回车发送">';
             echo '</div>';
             echo '<div class="be-col-auto">';
             echo '<div class="be-pl-50">';
@@ -143,7 +143,7 @@ class Template extends Section
 
             $prompt.change(check).keydown(function (event) {
                 check();
-                if (event.keyCode === 13) {
+                if (event.ctrlKey && event.keyCode === 13) {
                     $submit.trigger("click");
                 }
             })
