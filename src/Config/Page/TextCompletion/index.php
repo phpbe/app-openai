@@ -2,6 +2,9 @@
 
 namespace Be\App\Openai\Config\Page\TextCompletion;
 
+/**
+ * @BeConfig("文本应签")
+ */
 class index
 {
 

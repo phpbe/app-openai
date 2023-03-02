@@ -2,22 +2,26 @@
 
 namespace Be\App\Openai\Config\Page\TextCompletion;
 
+
 /**
- * @BeConfig("文本应签历史")
+ * @BeConfig("聊天应签")
  */
-class history
+class index
 {
 
-    public int $west = 0;
-    public int $center = 1;
+    public int $west = 30;
+    public int $center = 70;
     public int $east = 0;
+
+    public array $westSections = [
+        [
+            'name' => 'App.Openai.ChatCompletionLatest',
+        ],
+    ];
 
     public array $centerSections = [
         [
-            'name' => 'Theme.System.PageTitle',
-        ],
-        [
-            'name' => 'App.Openai.TextCompletionHistory',
+            'name' => 'App.Openai.ChatCompletion',
         ],
     ];
 
@@ -27,7 +31,7 @@ class history
      *     driver = "FormItemInput"
      * )
      */
-    public string $title = 'ChatGPT 文本应签 历史会话记录';
+    public string $title = '与 ChatGPT 聊天';
 
     /**
      * @BeConfigItem("Meta描述",
@@ -35,7 +39,7 @@ class history
      *     driver = "FormItemInput"
      * )
      */
-    public string $metaDescription = 'ChatGPT 文本应签 历史会话记录';
+    public string $metaDescription = '与 ChatGPT 聊天';
 
     /**
      * @BeConfigItem("Meta关键词",
@@ -43,7 +47,7 @@ class history
      *     driver = "FormItemInput"
      * )
      */
-    public string $metaKeywords = 'ChatGPT,文本应签,会话记录';
+    public string $metaKeywords = 'ChatGPT';
 
     /**
      * @BeConfigItem("页面标题",

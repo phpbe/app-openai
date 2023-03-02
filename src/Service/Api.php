@@ -74,6 +74,78 @@ class Api
         return $answer;
     }
 
+    /**
+     * 聊天应答
+     */
+    public function chatCompletion(array $messages = [], array $options = [])
+    {
+        $url = 'https://api.openai.com/v1/chat/completions';
+
+        $configApi = Be::getConfig('App.Openai.Api');
+
+        $data = [
+            'model' => 'gpt-3.5-turbo',
+            'messages' => $messages,
+            'max_tokens' => 2048,
+        ];
+
+        foreach ([
+                     'model',
+                     'temperature',
+                     'top_p',
+                     'n',
+                     'stream',
+                     'stop',
+                     'max_tokens',
+                     'presence_penalty',
+                     'frequency_penalty',
+                     'logit_bias',
+                     'user',
+                 ] as $key) {
+            if (isset($options[$key])) {
+                $data[$key] = $options[$key];
+            }
+        }
+
+        $headers = ['Authorization: Bearer ' . $configApi->apiKey];
+
+        //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($url, true) . "\n", FILE_APPEND);
+        //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($data, true) . "\n", FILE_APPEND);
+        //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($headers, true) . "\n", FILE_APPEND);
+
+        $responseStr = \Be\Util\Net\Curl::postJson($url, $data, $headers, [CURLOPT_TIMEOUT => 180]);
+
+        //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($responseStr, true) . "\n\n\n", FILE_APPEND);
+
+        $response = json_decode($responseStr, true);
+        if (!$response || !is_array($response)) {
+            throw new ServiceException('调用 OpenAi 聊天应答（/v1/chat/completions）接口未返回有效JSON数据');
+        }
+
+        if (isset($response['error'])) {
+            $message = '调用 OpenAi 聊天应答（/v1/chat/completions）接口出错';
+            if (isset($response['error']['message'])) {
+                $message .= '：' . $response['error']['message'];
+            } else {
+                $message .= '！';
+            }
+            throw new ServiceException($message);
+        }
+
+        if (!isset($response['choices'][0]['message']['content'])) {
+            throw new ServiceException('调用 OpenAi 聊天应答（/v1/chat/completions）接口无返回有效数据');
+        }
+
+        $answer = $response['choices'][0]['message']['content'];
+        $answer = trim($answer);
+
+        if (!$answer) {
+            $answer = '...';
+        }
+
+        return $answer;
+    }
+
 
     /**
      * 图像生成

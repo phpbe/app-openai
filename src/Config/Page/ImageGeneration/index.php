@@ -2,6 +2,9 @@
 
 namespace Be\App\Openai\Config\Page\ImageGeneration;
 
+/**
+ * @BeConfig("图象生成")
+ */
 class index
 {
 

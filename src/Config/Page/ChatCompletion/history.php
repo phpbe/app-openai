@@ -1,9 +1,9 @@
 <?php
 
-namespace Be\App\Openai\Config\Page\TextCompletion;
+namespace Be\App\Openai\Config\Page\ChatCompletion;
 
 /**
- * @BeConfig("文本应签历史")
+ * @BeConfig("聊天应签历史")
  */
 class history
 {
@@ -17,7 +17,7 @@ class history
             'name' => 'Theme.System.PageTitle',
         ],
         [
-            'name' => 'App.Openai.TextCompletionHistory',
+            'name' => 'App.Openai.ChatCompletionHistory',
         ],
     ];
 
@@ -27,7 +27,7 @@ class history
      *     driver = "FormItemInput"
      * )
      */
-    public string $title = 'ChatGPT 文本应签 历史会话记录';
+    public string $title = 'ChatGPT 聊天应签 历史会话记录';
 
     /**
      * @BeConfigItem("Meta描述",
@@ -35,7 +35,7 @@ class history
      *     driver = "FormItemInput"
      * )
      */
-    public string $metaDescription = 'ChatGPT 文本应签 历史会话记录';
+    public string $metaDescription = 'ChatGPT 聊天应签 历史会话记录';
 
     /**
      * @BeConfigItem("Meta关键词",
@@ -43,7 +43,7 @@ class history
      *     driver = "FormItemInput"
      * )
      */
-    public string $metaKeywords = 'ChatGPT,文本应签,会话记录';
+    public string $metaKeywords = 'ChatGPT,聊天应签,会话记录';
 
     /**
      * @BeConfigItem("页面标题",

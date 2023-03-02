@@ -22,8 +22,8 @@ class ImageGeneration extends Auth
 {
 
     /**
-     * @BeMenu("生成图像", icon = "bi-image-alt", ordering="1.1")
-     * @BePermission("生成图像", ordering="1.1")
+     * @BeMenu("生成图像", icon = "bi-image-alt", ordering="3.1")
+     * @BePermission("生成图像", ordering="3.1")
      */
     public function index()
     {
@@ -107,8 +107,8 @@ class ImageGeneration extends Auth
 
 
     /**
-     * @BeMenu("生成图像记录", icon = "bi-images", ordering="1.2")
-     * @BePermission("生成图像记录", ordering="1.2")
+     * @BeMenu("生成图像记录", icon = "bi-images", ordering="3.2")
+     * @BePermission("生成图像记录", ordering="3.2")
      */
     public function history()
     {

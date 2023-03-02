@@ -2,43 +2,45 @@
 
 namespace Be\App\Openai\Controller\Admin;
 
+use Be\AdminPlugin\Form\Item\FormItemSelect;
 use Be\AdminPlugin\Table\Item\TableItemLink;
 use Be\AdminPlugin\Table\Item\TableItemSelection;
+use Be\AdminPlugin\Table\Item\TableItemToggleIcon;
 use Be\App\System\Controller\Admin\Auth;
 use Be\Be;
 
 /**
  * 存储管理器
  *
- * @BeMenuGroup("文本应答", icon = "bi-chat-left-text", ordering="1")
- * @BePermissionGroup("文本应答")
+ * @BeMenuGroup("聊天应答", icon = "bi-chat-text", ordering="2")
+ * @BePermissionGroup("聊天应答")
  */
-class TextCompletion extends Auth
+class ChatCompletion extends Auth
 {
 
     /**
-     * @BeMenu("会话", icon = "bi-chat-left", ordering="1.1")
-     * @BePermission("会话", ordering="1.1")
+     * @BeMenu("会话", icon = "bi-chat", ordering="2.1")
+     * @BePermission("会话", ordering="2.1")
      */
     public function index()
     {
         $request = Be::getRequest();
         $response = Be::getResponse();
 
-        $textCompletionId = $request->get('text_completion_id', '');
+        $chatCompletionId = $request->get('chat_completion_id', '');
 
-        $textCompletion = false;
-        if ($textCompletionId !== '') {
+        $chatCompletion = false;
+        if ($chatCompletionId !== '') {
             try {
-                $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
-                $textCompletion = $serviceTextCompletion->get($textCompletionId);
+                $serviceChatCompletion = Be::getService('App.Openai.ChatCompletion');
+                $chatCompletion = $serviceChatCompletion->get($chatCompletionId);
             } catch (\Throwable $t) {
             }
         }
 
-        $response->set('textCompletion', $textCompletion);
+        $response->set('chatCompletion', $chatCompletion);
 
-        $response->set('title', '与 ChatGPT 对话（模型：text-davinci-003）');
+        $response->set('title', '与 ChatGPT 对话（模型：gpt-3.5-turbo）');
         $response->display();
     }
 
@@ -50,24 +52,24 @@ class TextCompletion extends Auth
         $request = Be::getRequest();
         $response = Be::getResponse();
 
-        $textCompletionId = $request->get('text_completion_id', '');
+        $chatCompletionId = $request->get('chat_completion_id', '');
 
-        $textCompletion = false;
-        if ($textCompletionId !== '') {
+        $chatCompletion = false;
+        if ($chatCompletionId !== '') {
             try {
-                $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
-                $textCompletion = $serviceTextCompletion->get($textCompletionId);
+                $serviceChatCompletion = Be::getService('App.Openai.ChatCompletion');
+                $chatCompletion = $serviceChatCompletion->get($chatCompletionId);
             } catch (\Throwable $t) {
             }
         }
 
-        $response->set('textCompletion', $textCompletion);
+        $response->set('chatCompletion', $chatCompletion);
 
-        $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
-        $result = $serviceTextCompletion->getHistory([
+        $serviceChatCompletion = Be::getService('App.Openai.ChatCompletion');
+        $result = $serviceChatCompletion->getHistory([
             'pageSize' => 30
         ]);
-        $response->set('textCompletionHistory', $result);
+        $response->set('chatCompletionHistory', $result);
 
         // JS 回调代码，base64编码
         $callback = $request->get('callback', '');
@@ -95,16 +97,16 @@ class TextCompletion extends Auth
 
         try {
             $prompt = $request->post('prompt', '');
-            $textCompletionId = $request->post('text_completion_id', '');
-            $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
-            $textCompletion = $serviceTextCompletion->send($prompt, $textCompletionId);
+            $chatCompletionId = $request->post('chat_completion_id', '');
+            $serviceChatCompletion = Be::getService('App.Openai.ChatCompletion');
+            $chatCompletion = $serviceChatCompletion->send($prompt, $chatCompletionId);
 
             $session = Be::getSession();
-            $session->set('app:openai:admin:currentTextCompletionId', $textCompletion->id);
+            $session->set('app:openai:admin:currentChatCompletionId', $chatCompletion->id);
 
             $response->set('success', true);
             $response->set('message', '提交成功！');
-            $response->set('textCompletion', $textCompletion);
+            $response->set('chatCompletion', $chatCompletion);
             $response->json();
         } catch (\Throwable $t) {
             $response->set('success', false);
@@ -124,14 +126,14 @@ class TextCompletion extends Auth
         $response = Be::getResponse();
 
         try {
-            $textCompletionId = $request->post('text_completion_id', '');
-            $textCompletionMessageId = $request->post('text_completion_message_id', '');
-            $serviceTextCompletion = Be::getService('App.Openai.TextCompletion');
-            $textCompletionMessage = $serviceTextCompletion->waitMessage($textCompletionId, $textCompletionMessageId);
+            $chatCompletionId = $request->post('chat_completion_id', '');
+            $chatCompletionMessageId = $request->post('chat_completion_message_id', '');
+            $serviceChatCompletion = Be::getService('App.Openai.ChatCompletion');
+            $chatCompletionMessage = $serviceChatCompletion->waitMessage($chatCompletionId, $chatCompletionMessageId);
 
             $response->set('success', true);
             $response->set('message', '获取成功！');
-            $response->set('textCompletionMessage', $textCompletionMessage);
+            $response->set('chatCompletionMessage', $chatCompletionMessage);
             $response->json();
 
         } catch (\Throwable $t) {
@@ -142,14 +144,14 @@ class TextCompletion extends Auth
     }
 
     /**
-     * @BeMenu("会话记录", icon = "bi-list", ordering="1.2")
-     * @BePermission("会话记录", ordering="1.2")
+     * @BeMenu("会话记录", icon = "bi-list", ordering="2.2")
+     * @BePermission("会话记录", ordering="2.2")
      */
     public function history()
     {
         Be::getAdminPlugin('Curd')->setting([
             'label' => '会话记录',
-            'table' => 'openai_text_completion',
+            'table' => 'openai_chat_completion',
             'grid' => [
                 'title' => '会话记录',
                 'orderBy' => 'create_time',
@@ -167,7 +169,7 @@ class TextCompletion extends Auth
                     'items' => [
                         [
                             'label' => '新增会话',
-                            'url' => beAdminUrl('Openai.TextCompletion.index'),
+                            'url' => beAdminUrl('Openai.ChatCompletion.index'),
                             'target' => 'self', // 'ajax - ajax请求 / dialog - 对话框窗口 / drawer - 抽屉 / self - 当前页面 / blank - 新页面'
                             'ui' => [
                                 'icon' => 'el-icon-plus',
@@ -258,7 +260,7 @@ class TextCompletion extends Auth
         if ($postData) {
             $postData = json_decode($postData, true);
             if (isset($postData['row']['id']) && $postData['row']['id']) {
-                $response->redirect(beAdminUrl('Openai.TextCompletion.index', ['text_completion_id' => $postData['row']['id']]));
+                $response->redirect(beAdminUrl('Openai.ChatCompletion.index', ['chat_completion_id' => $postData['row']['id']]));
             }
         }
     }
@@ -276,17 +278,17 @@ class TextCompletion extends Auth
         try {
             $postData = $request->json();
 
-            $textCompletionIds = [];
+            $chatCompletionIds = [];
             if (isset($postData['selectedRows'])) {
                 foreach ($postData['selectedRows'] as $row) {
-                    $textCompletionIds[] = $row['id'];
+                    $chatCompletionIds[] = $row['id'];
                 }
             } elseif (isset($postData['row'])) {
-                $textCompletionIds[] = $postData['row']['id'];
+                $chatCompletionIds[] = $postData['row']['id'];
             }
 
-            if (count($textCompletionIds) > 0) {
-                Be::getService('App.Openai.Admin.TextCompletion')->delete($textCompletionIds);
+            if (count($chatCompletionIds) > 0) {
+                Be::getService('App.Openai.Admin.ChatCompletion')->delete($chatCompletionIds);
             }
 
             $response->set('success', true);
