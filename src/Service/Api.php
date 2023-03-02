@@ -13,9 +13,8 @@ class Api
      */
     public function textCompletion(string $prompt, array $options = [])
     {
-        $url = 'https://api.openai.com/v1/completions';
-
         $configApi = Be::getConfig('App.Openai.Api');
+        $url = $configApi->url . '/v1/completions';
 
         $data = [
             'model' => 'text-davinci-003',
@@ -79,9 +78,8 @@ class Api
      */
     public function chatCompletion(array $messages = [], array $options = [])
     {
-        $url = 'https://api.openai.com/v1/chat/completions';
-
         $configApi = Be::getConfig('App.Openai.Api');
+        $url = $configApi->url . '/v1/chat/completions';
 
         $data = [
             'model' => 'gpt-3.5-turbo',
@@ -152,9 +150,8 @@ class Api
      */
     public function imageGeneration(string $prompt, array $options = [])
     {
-        $url = 'https://api.openai.com/v1/images/generations';
-
         $configApi = Be::getConfig('App.Openai.Api');
+        $url = $configApi->url . '/v1/images/generations';
 
         $data = [
             'prompt' => $prompt,

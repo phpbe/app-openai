@@ -8,6 +8,11 @@ class Api
 {
 
     /**
+     * @BeConfigItem("网址", driver="FormItemInput")
+     */
+    public string $url = 'https://api.openai.com';
+
+    /**
      * @BeConfigItem("API key", driver="FormItemInput")
      */
     public string $apiKey = '';
