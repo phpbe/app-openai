@@ -119,7 +119,7 @@ class TextCompletion extends Base
     /**
      * ChatGPT 历史会话
      *
-     * @BeMenu("ChatGPT 提问应答历史记录")
+     * @BeMenu("ChatGPT 文本应答历史记录")
      * @BeRoute("/openai/text/completion/history")
      */
     public function history()
