@@ -1,6 +1,6 @@
 <?php
 
-namespace Be\App\Openai\Config\Page\TextCompletion;
+namespace Be\App\Openai\Config\Page\ChatCompletion;
 
 
 /**
