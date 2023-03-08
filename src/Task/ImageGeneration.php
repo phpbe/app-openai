@@ -70,9 +70,9 @@ class ImageGeneration extends Task
 
             if ($incomplete > 0) {
                 if (Be::getRuntime()->isSwooleMode()) {
-                    \Swoole\Coroutine::sleep(1);
+                    \Swoole\Coroutine::sleep(10);
                 } else {
-                    sleep(1);
+                    sleep(10);
                 }
             }
 
