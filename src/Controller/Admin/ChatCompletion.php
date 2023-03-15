@@ -40,7 +40,8 @@ class ChatCompletion extends Auth
 
         $response->set('chatCompletion', $chatCompletion);
 
-        $response->set('title', '与 ChatGPT 对话（模型：gpt-3.5-turbo）');
+        $configApi = Be::getConfig('App.Openai.Api');
+        $response->set('title', '与 ChatGPT 对话（模型：'. $configApi->chatCompletionModel .'）');
         $response->display();
     }
 
