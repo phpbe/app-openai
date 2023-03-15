@@ -81,8 +81,14 @@ class Api
         $configApi = Be::getConfig('App.Openai.Api');
         $url = $configApi->url . '/v1/chat/completions';
 
+        if (isset($configApi->chatCompletionModel)) {
+            $model = $configApi->chatCompletionModel;
+        } else {
+            $model = 'gpt-4';
+        }
+
         $data = [
-            'model' => 'gpt-3.5-turbo',
+            'model' => $model,
             'messages' => $messages,
             'max_tokens' => 2048,
         ];

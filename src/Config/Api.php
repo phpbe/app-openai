@@ -22,6 +22,11 @@ class Api
      */
     public int $times = 5;
 
+    /**
+     * @BeConfigItem("聊天应签模型", driver="FormItemSelect", values="return ['gpt-3.5-turbo', 'gpt-4']")
+     */
+    public string $chatCompletionModel = 'gpt-3.5-turbo';
+
 
 }
 
