@@ -18,6 +18,11 @@ class Api
     public string $apiKey = '';
 
     /**
+     * @BeConfigItem("调用时间最小间隔（秒）", description="防止调用超限，免费账号最低间隔20秒，小于等于0时不限制", driver="FormItemInputNumberInt")
+     */
+    public int $interval = 30;
+
+    /**
      * @BeConfigItem("调用失败重试次数", driver="FormItemInputNumberInt")
      */
     public int $times = 5;
