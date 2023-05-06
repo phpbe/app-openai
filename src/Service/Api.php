@@ -18,7 +18,7 @@ class Api
         if ($configApi->interval > 0) {
             $t = time();
             $cache = Be::getCache();
-            $lastCallTimeKey = 'Openai:Api:lastCallTime';
+            $lastCallTimeKey = 'App:Openai:Api:lastCallTime';
             $lastCallTime = $cache->get($lastCallTimeKey);
             if ($lastCallTime) {
                 $lastCallTime = (int) $lastCallTime;
@@ -117,7 +117,7 @@ class Api
         if ($configApi->interval > 0) {
             $t = time();
             $cache = Be::getCache();
-            $lastCallTimeKey = 'Openai:Api:lastCallTime';
+            $lastCallTimeKey = 'App:Openai:Api:lastCallTime';
             $lastCallTime = $cache->get($lastCallTimeKey);
             if ($lastCallTime) {
                 $lastCallTime = (int) $lastCallTime;
