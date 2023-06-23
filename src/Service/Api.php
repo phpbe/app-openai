@@ -14,10 +14,10 @@ class Api
     public function chatCompletion(array $messages = [], array $options = [])
     {
         $configApi = Be::getConfig('App.Openai.Api');
+        $cache = Be::getCache();
 
         if ($configApi->interval > 0) {
             $t = time();
-            $cache = Be::getCache();
             $lastCallTimeKey = 'App:Openai:Api:lastCallTime';
             $lastCallTime = $cache->get($lastCallTimeKey);
             if ($lastCallTime) {
@@ -67,6 +67,14 @@ class Api
             }
         }
 
+        if ($configApi->chatCompletionCache > 0) {
+            $cacheKey = 'App:Openai:Api:chatCompletionCache' . md5(serialize($data));
+            $answer = $cache->get($cacheKey);
+            if ($answer !== false) {
+                return $answer;
+            }
+        }
+
         $headers = ['Authorization: Bearer ' . $configApi->apiKey];
 
         //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($url, true) . "\n", FILE_APPEND);
@@ -103,6 +111,10 @@ class Api
             $answer = '...';
         }
 
+        if ($configApi->chatCompletionCache > 0) {
+            $cache->set($cacheKey, $answer, $configApi->chatCompletionCache);
+        }
+
         return $answer;
     }
 
@@ -113,10 +125,10 @@ class Api
     public function imageGeneration(string $prompt, array $options = [])
     {
         $configApi = Be::getConfig('App.Openai.Api');
+        $cache = Be::getCache();
 
         if ($configApi->interval > 0) {
             $t = time();
-            $cache = Be::getCache();
             $lastCallTimeKey = 'App:Openai:Api:lastCallTime';
             $lastCallTime = $cache->get($lastCallTimeKey);
             if ($lastCallTime) {
@@ -151,6 +163,14 @@ class Api
             }
         }
 
+        if ($configApi->imageGenerationCache > 0) {
+            $cacheKey = 'App:Openai:Api:imageGenerationCache' . md5(serialize($data));
+            $imageUrl = $cache->get($cacheKey);
+            if ($imageUrl !== false) {
+                return $imageUrl;
+            }
+        }
+
         $headers = ['Authorization: Bearer ' . $configApi->apiKey];
 
         //file_put_contents(Be::getRuntime()->getRootPath() . '/api.txt', print_r($url, true) . "\n", FILE_APPEND);
@@ -180,10 +200,14 @@ class Api
             throw new ServiceException('调用 OpenAi 图像生成（/v1/images/generations）接口未返回有效数据');
         }
 
-        $url = $response['data'][0]['url'];
-        $url = trim($url);
+        $imageUrl = $response['data'][0]['url'];
+        $imageUrl = trim($imageUrl);
 
-        return $url;
+        if ($configApi->imageGenerationCache > 0) {
+            $cache->set($cacheKey, $imageUrl, $configApi->imageGenerationCache);
+        }
+
+        return $imageUrl;
     }
 
 
