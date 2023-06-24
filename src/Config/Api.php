@@ -33,12 +33,12 @@ class Api
     public string $chatCompletionModel = 'gpt-3.5-turbo';
 
     /**
-     * @BeConfigItem("聊天应签 - 缓存时间（秒）", description="启用扣，调用结果将缓存起来，相同内容再次调用时，将直接从缓存中返回结果，小于等于0时无缓存", driver="FormItemInputNumberInt")
+     * @BeConfigItem("聊天应签 - 缓存时间（秒）", description="调用结果将缓存一段时间，相同内容再次调用时，将直接从缓存中返回结果，小于等于0时无缓存", driver="FormItemInputNumberInt")
      */
     public int $chatCompletionCache = 2592000;
 
     /**
-     * @BeConfigItem("图像生成 - 缓存时间（秒）", description="启用扣，调用结果将缓存起来，相同内容再次调用时，将直接从缓存中返回结果，小于等于0时无缓存", driver="FormItemInputNumberInt")
+     * @BeConfigItem("图像生成 - 缓存时间（秒）", description="调用结果将缓存一段时间，相同内容再次调用时，将直接从缓存中返回结果，小于等于0时无缓存", driver="FormItemInputNumberInt")
      */
     public int $imageGenerationCache = 86400;
 
